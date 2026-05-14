@@ -1,0 +1,11 @@
+<section class="py-16 border-t border-primary/10">
+  <h3 class="text-2xl font-black text-slate-900 mb-8">{{ title() }}</h3>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+    @for (spec of specifications(); track spec.label) {
+      <div class="flex justify-between py-4 border-b border-primary/5">
+        <span class="text-slate-500 font-medium">{{ spec.label }}</span>
+        <span class="text-slate-900 font-bold">{{ spec.value }}</span>
+      </div>
+    }
+  </div>
+</section>

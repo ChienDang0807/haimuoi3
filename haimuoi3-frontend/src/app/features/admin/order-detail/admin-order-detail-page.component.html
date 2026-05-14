@@ -1,0 +1,77 @@
+<div class="flex min-h-screen bg-background">
+  <app-admin-sidebar />
+
+  <main class="flex-1 flex flex-col min-w-0">
+    <app-admin-header pageTitle="Order Detail" searchPlaceholder="Search orders..." />
+
+    <div class="p-12">
+      @if (order | async; as orderResult) {
+        @if (orderResult.result; as orderData) {
+          <div class="max-w-4xl">
+            <div class="mb-8">
+              <h1 class="text-4xl font-black uppercase tracking-tighter text-on-surface">Order #{{ orderData.id }}</h1>
+              <p class="text-secondary mt-2">{{ orderData.createdAt | date: 'medium' }}</p>
+              <span
+                class="inline-flex items-center rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-wider mt-4"
+                [ngClass]="statusBadgeClass(orderData.status)">
+                {{ statusLabel(orderData.status) }}
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 gap-6 rounded-xl border border-primary/10 bg-white p-6 shadow-sm md:grid-cols-2">
+              <div>
+                <h5 class="mb-2 text-[10px] font-black uppercase tracking-wider text-secondary">Customer</h5>
+                <p class="font-medium text-on-surface">{{ orderData.customerName }}</p>
+              </div>
+              <div>
+                <h5 class="mb-2 text-[10px] font-black uppercase tracking-wider text-secondary">Payment</h5>
+                <p class="font-medium text-on-surface">{{ orderData.paymentMethod }}</p>
+              </div>
+              <div class="md:col-span-2">
+                <h5 class="mb-2 text-[10px] font-black uppercase tracking-wider text-secondary">Shipping address</h5>
+                <p class="text-sm leading-relaxed text-secondary">{{ orderData.shippingAddress }}</p>
+              </div>
+            </div>
+
+            @if (orderData.items && orderData.items.length > 0) {
+              <div class="overflow-hidden rounded-xl border border-primary/10 bg-white shadow-sm mt-8">
+                <div class="border-b border-primary/5 bg-slate-50/50 px-6 py-4">
+                  <h3 class="text-lg font-bold text-on-surface">Order summary</h3>
+                </div>
+                <div class="divide-y divide-primary/5">
+                  @for (item of orderData.items; track item.productName) {
+                    <div class="flex items-center justify-between p-6">
+                      <div>
+                        <h4 class="font-semibold text-on-surface">{{ item.productName }}</h4>
+                        <p class="mt-1 text-sm text-secondary">
+                          Qty: {{ item.quantity }} × ${{ item.unitPrice | number: '1.2-2' }}
+                        </p>
+                      </div>
+                      <p class="font-bold text-on-surface">${{ item.subtotal | number: '1.2-2' }}</p>
+                    </div>
+                  }
+                </div>
+                <div class="border-t border-primary/10 bg-slate-50/50 p-6">
+                  <div class="flex items-center justify-between">
+                    <span class="text-lg font-bold text-on-surface">Total</span>
+                    <span class="text-2xl font-bold text-primary">${{ orderData.totalAmount | number: '1.2-2' }}</span>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="flex flex-col items-center justify-center py-24">
+            <span class="material-symbols-outlined mb-4 animate-spin text-5xl text-primary">progress_activity</span>
+            <p class="font-medium text-secondary">Loading order...</p>
+          </div>
+        }
+      } @else {
+        <div class="flex flex-col items-center justify-center py-24">
+          <span class="material-symbols-outlined mb-4 animate-spin text-5xl text-primary">progress_activity</span>
+          <p class="font-medium text-secondary">Loading order...</p>
+        </div>
+      }
+    </div>
+  </main>
+</div>

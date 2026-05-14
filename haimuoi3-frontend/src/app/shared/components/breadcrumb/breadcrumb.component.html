@@ -1,0 +1,15 @@
+<nav class="flex items-center gap-2 text-sm text-slate-500 mb-8">
+  @for (item of items(); track item.label; let last = $last) {
+    @if (!last && item.url) {
+      <a class="hover:underline" [routerLink]="item.url">{{ item.label }}</a>
+      <span class="material-symbols-outlined text-xs">chevron_right</span>
+    } @else {
+      <span [class.text-slate-900]="item.active || last" [class.font-medium]="item.active || last">
+        {{ item.label }}
+      </span>
+      @if (!last) {
+        <span class="material-symbols-outlined text-xs">chevron_right</span>
+      }
+    }
+  }
+</nav>

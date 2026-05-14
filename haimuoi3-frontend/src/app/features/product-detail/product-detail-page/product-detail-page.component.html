@@ -1,0 +1,72 @@
+<app-header />
+
+<main class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    @if (errorMessage(); as err) {
+      <div class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700">
+        {{ err }}
+      </div>
+    }
+
+    @if (product(); as product) {
+      <app-breadcrumb [items]="breadcrumbs()" />
+
+      <div class="mb-6 flex justify-end">
+        @if (authService.isLoggedIn() && authService.currentUser()?.role === UserRole.CUSTOMER) {
+          <button
+            type="button"
+            class="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:border-red-200 hover:text-red-500"
+            [class.text-red-500]="inWishlist()"
+            [attr.aria-pressed]="inWishlist()"
+            (click)="onWishlistToggle()"
+            aria-label="Wishlist">
+            @if (inWishlist()) {
+              <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg>
+            } @else {
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5" />
+              </svg>
+            }
+          </button>
+        }
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        <app-product-gallery 
+          [images]="product.images || [product.imageUrl]"
+          [badge]="product.badge?.text" />
+
+        <app-product-info 
+          [product]="product"
+          (buyNow)="onBuyNow()"
+          (addToCart)="onAddToCart()"
+          (configChange)="onConfigChange($event)" />
+      </div>
+
+      @if (product.specifications && product.specifications.length > 0) {
+        <app-technical-specs [specifications]="product.specifications" />
+      }
+
+      @if (shop(); as shopData) {
+        <app-shop-info-card 
+          [shop]="shopData"
+          (visitStore)="onVisitStore($event)" />
+      }
+
+      @if (reviewStats(); as stats) {
+        <app-product-reviews-section 
+          [reviews]="reviews()"
+          [stats]="stats" />
+      }
+    }
+  </div>
+</main>
+
+<app-footer />

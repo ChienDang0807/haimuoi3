@@ -1,0 +1,16 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+
+jwt:
+  secret: test-jwt-secret-for-integration-tests-only-min-32-chars
+  access-token-expiration: 3600
+  refresh-token-expiration: 86400
+
+stripe:
+  secret-key: sk_test_placeholder
+  webhook-secret: whsec_placeholder
+
+app:
+  base-url: http://localhost:4200

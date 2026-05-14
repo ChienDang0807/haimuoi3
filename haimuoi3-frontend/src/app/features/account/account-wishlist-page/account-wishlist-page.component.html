@@ -1,0 +1,137 @@
+<app-header />
+
+<div class="min-h-screen bg-background text-on-background">
+  <app-account-sidebar />
+
+  <main class="min-h-screen pt-20 md:pl-72">
+    <div class="mx-auto max-w-6xl space-y-12 p-8 lg:p-12">
+      <header class="space-y-4">
+        <span class="text-[10px] font-black uppercase tracking-widest text-primary">Account</span>
+        <h1 class="text-4xl font-black uppercase tracking-tighter text-on-surface md:text-5xl lg:text-6xl">
+          Wishlist
+        </h1>
+        <p class="max-w-2xl text-lg font-medium leading-relaxed text-secondary">
+          Curated items you saved. Add to cart when a single variant is available, or open the product to choose options.
+        </p>
+      </header>
+
+      @if (isShopOwner()) {
+        <div class="rounded-xl border border-outline-variant bg-surface-container-low p-8">
+          <p class="font-bold text-on-surface">Wishlist is available for customer accounts.</p>
+          <p class="mt-2 text-sm text-secondary">Sign in with a shopper account to use this feature.</p>
+        </div>
+      } @else if (loading()) {
+        <div class="flex flex-col items-center justify-center py-24">
+          <span class="material-symbols-outlined mb-4 animate-spin text-5xl text-primary">progress_activity</span>
+          <p class="font-medium text-secondary">Loading wishlist...</p>
+        </div>
+      } @else if (error()) {
+        <div class="rounded-xl border border-error-container bg-error-container/30 p-8 text-center">
+          <p class="font-bold text-on-surface">Could not load wishlist.</p>
+          <p class="mt-2 text-sm text-secondary">Please try again later.</p>
+        </div>
+      } @else if (items().length === 0) {
+        <div class="rounded-xl border border-dashed border-outline-variant p-12 text-center">
+          <p class="text-lg font-bold text-on-surface">Your wishlist is empty</p>
+          <p class="mt-2 text-secondary">Browse collections and tap the heart to save items.</p>
+          <a
+            routerLink="/category/all"
+            class="mt-6 inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-bold uppercase tracking-widest text-on-primary">
+            Explore catalog
+          </a>
+        </div>
+      } @else {
+        <div class="grid grid-cols-1 gap-10 md:grid-cols-2 xl:grid-cols-3">
+          @for (item of items(); track item.id) {
+            <article
+              class="group flex flex-col overflow-hidden rounded-xl bg-surface-container-low shadow-sm transition hover:-translate-y-1"
+              [class.opacity-60]="isUnavailable(item)"
+              [class.grayscale]="item.availability === 'DISCONTINUED'">
+              <button type="button" class="relative block w-full text-left" (click)="goToProduct(item.productId)">
+                <div class="relative aspect-square overflow-hidden bg-surface-container">
+                  @if (item.imageUrl) {
+                    <img [src]="item.imageUrl" [alt]="item.name" class="h-full w-full object-cover transition group-hover:scale-105" />
+                  } @else {
+                    <div class="flex h-full w-full items-center justify-center text-secondary">
+                      <span class="material-symbols-outlined text-5xl">hide_image</span>
+                    </div>
+                  }
+                  @if (item.availability !== 'AVAILABLE') {
+                    <span
+                      class="absolute left-3 top-3 rounded-full bg-on-surface px-3 py-1 text-[10px] font-black uppercase tracking-widest text-surface">
+                      {{ availabilityLabel(item.availability) }}
+                    </span>
+                  }
+                </div>
+                <div class="flex flex-1 flex-col gap-4 p-6">
+                  <div class="flex items-start justify-between gap-2">
+                    <h2 class="text-lg font-black uppercase tracking-tight text-on-surface">{{ item.name }}</h2>
+                    <button
+                      type="button"
+                      class="shrink-0 text-secondary transition hover:text-error"
+                      (click)="removeItem(item, $event)"
+                      aria-label="Remove from wishlist">
+                      <span class="material-symbols-outlined">close</span>
+                    </button>
+                  </div>
+                  @if (toNumber(item.minPrice) != null) {
+                    <p class="text-xl font-black text-on-surface">
+                      @if (toNumber(item.maxPrice) != null && toNumber(item.minPrice) !== toNumber(item.maxPrice)) {
+                        {{ toNumber(item.minPrice) | currency: 'USD' : 'symbol' : '1.0-2' }}
+                        –
+                        {{ toNumber(item.maxPrice) | currency: 'USD' : 'symbol' : '1.0-2' }}
+                      } @else {
+                        {{ toNumber(item.minPrice) | currency: 'USD' : 'symbol' : '1.0-2' }}
+                      }
+                    </p>
+                  }
+                  <div class="mt-auto flex flex-col gap-2">
+                    @if (item.activeSkuCount === 1 && item.availability === 'AVAILABLE') {
+                      <button
+                        type="button"
+                        class="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-on-surface text-sm font-black uppercase tracking-widest text-surface transition hover:bg-on-surface/90"
+                        (click)="addToCartOrNavigate(item, $event)">
+                        <span class="material-symbols-outlined text-lg">shopping_bag</span>
+                        Add to cart
+                      </button>
+                    } @else {
+                      <button
+                        type="button"
+                        class="flex h-12 w-full items-center justify-center rounded-lg border-2 border-on-surface text-sm font-black uppercase tracking-widest text-on-surface transition hover:bg-on-surface hover:text-surface disabled:cursor-not-allowed disabled:opacity-50"
+                        [disabled]="item.availability !== 'AVAILABLE'"
+                        (click)="addToCartOrNavigate(item, $event)">
+                        View product
+                      </button>
+                    }
+                  </div>
+                </div>
+              </button>
+            </article>
+          }
+        </div>
+
+        @if (wishlistPage(); as page) {
+          @if (page.totalPages > 1) {
+            <div class="flex items-center justify-center gap-4 pt-4">
+              <button
+                type="button"
+                class="rounded-lg border border-outline-variant px-4 py-2 text-sm font-bold uppercase disabled:opacity-40"
+                [disabled]="page.first"
+                (click)="loadPage(currentPage() - 1)">
+                Previous
+              </button>
+              <span class="text-sm text-secondary">Page {{ page.number + 1 }} of {{ page.totalPages }}</span>
+              <button
+                type="button"
+                class="rounded-lg border border-outline-variant px-4 py-2 text-sm font-bold uppercase disabled:opacity-40"
+                [disabled]="page.last"
+                (click)="loadPage(currentPage() + 1)">
+                Next
+              </button>
+            </div>
+          }
+        }
+      }
+    </div>
+  </main>
+</div>

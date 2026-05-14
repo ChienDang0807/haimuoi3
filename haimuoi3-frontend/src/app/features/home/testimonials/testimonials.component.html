@@ -1,0 +1,12 @@
+<section class="bg-titanium-graphite py-24 text-white">
+  <div class="mx-auto max-w-[1440px] px-6 lg:px-12">
+    <span class="text-[10px] font-bold tracking-[0.3em] text-gray-500 uppercase">The Collective Opinion</span>
+    <h2 class="mt-4 mb-20 text-4xl font-medium tracking-tighter uppercase">Client Journals</h2>
+    
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+      @for (testimonial of testimonials; track testimonial.id) {
+        <app-testimonial-card [testimonial]="testimonial" />
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,88 @@
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# IDE / editor
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.c9/
+*.launch
+.settings/
+.classpath
+.project
+.history/
+
+# Cursor / agent / local specs (not application source)
+.cursor/
+.agent/
+.kiro/
+
+# DATN workspace root (docs & assets only)
+/image/
+/BACKEND_DATA_REQUIREMENTS_BY_SCREEN.md
+/PHAN_TICH_CHUC_NANG.md
+/SYSTEM_DESIGN.md
+/USE_CASES.md
+
+# Java / Spring Boot
+**/target/
+hs_err_pid*.log
+replay_pid*.log
+*.log
+.apt_generated
+.factorypath
+.springBeans
+.sts4-cache
+/nbproject/
+nbbuild/
+nbdist/
+.nb-gradle/
+
+# Backend non-source docs & design artifacts
+haimuoi3/docs/
+haimuoi3/diagram/
+haimuoi3/project-in4/
+haimuoi3/tools/
+haimuoi3/HELP.md
+haimuoi3/*.md
+haimuoi3/*.txt
+
+# Node / Angular
+**/node_modules/
+**/dist/
+**/.angular/cache
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.sass-cache/
+/connect.lock
+/coverage/
+/libpeerconnection.log
+testem.log
+/typings/
+__screenshots__/
+/tmp/
+/out-tsc/
+/bazel-out/
+
+# Frontend local docs
+haimuoi3-frontend/COMPONENT_STRUCTURE.md
+haimuoi3-frontend/IMPLEMENTATION_SUMMARY.md
+haimuoi3-frontend/src/admin.md
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+haimuoi3/.env
+haimuoi3/.env.*
+!haimuoi3/.env.example
+*.pem
+*.key
+*.p12
+secrets/

@@ -1,0 +1,120 @@
+<app-header />
+
+<main class="bg-white text-gray-900">
+  <section class="mx-auto max-w-[1440px] px-6 pt-12 pb-8 lg:px-12">
+    <nav class="mb-6">
+      <ul class="flex flex-wrap items-center gap-2 text-[10px] font-bold tracking-[0.2em] text-gray-400 uppercase">
+        <li><a class="hover:text-black transition-colors" routerLink="/">Home</a></li>
+        <li>/</li>
+        <li class="text-gray-700">Collections</li>
+        @if (routeSlug() !== 'all' || applied().globalCategoryId) {
+          <li>/</li>
+          <li class="text-black">{{ currentCategoryName() }}</li>
+        }
+      </ul>
+    </nav>
+
+    <h1 class="text-5xl font-bold tracking-tight uppercase lg:text-6xl">{{ currentCategoryName() }}</h1>
+  </section>
+
+  <section class="mx-auto max-w-[1440px] px-6 pb-10 lg:px-12">
+    <div class="rounded-lg border border-gray-200 bg-gray-50 px-5 py-5">
+      <div class="flex flex-col gap-4 lg:flex-row lg:flex-wrap lg:items-end">
+        <label class="flex min-w-[200px] flex-1 flex-col gap-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-600">
+          Danh mục
+          <select
+            class="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-900"
+            [value]="draft().globalCategoryId ?? ''"
+            (change)="onCategorySelect($event)">
+            <option value="">Tất cả</option>
+            @for (c of categories(); track c.globalCategoryId) {
+              <option [value]="c.globalCategoryId">{{ c.name }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="flex min-w-[180px] flex-1 flex-col gap-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-600">
+          Từ khóa
+          <input
+            type="search"
+            class="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
+            placeholder="Tên sản phẩm…"
+            [value]="draft().q"
+            (input)="onDraftQ($event)" />
+        </label>
+
+        <label class="flex w-full min-w-[100px] flex-col gap-1.5 sm:max-w-[120px] text-[11px] font-bold uppercase tracking-wider text-gray-600">
+          Giá từ
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            class="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
+            placeholder="0"
+            [value]="draft().minPrice"
+            (input)="onDraftMinPrice($event)" />
+        </label>
+
+        <label class="flex w-full min-w-[100px] flex-col gap-1.5 sm:max-w-[120px] text-[11px] font-bold uppercase tracking-wider text-gray-600">
+          Giá đến
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            class="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
+            placeholder="—"
+            [value]="draft().maxPrice"
+            (input)="onDraftMaxPrice($event)" />
+        </label>
+
+        <label class="flex w-full min-w-[100px] flex-col gap-1.5 sm:max-w-[120px] text-[11px] font-bold uppercase tracking-wider text-gray-600">
+          Đánh giá tối thiểu
+          <input
+            type="number"
+            min="0"
+            max="5"
+            step="0.1"
+            class="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
+            placeholder="0–5"
+            [value]="draft().minRating"
+            (input)="onDraftMinRating($event)" />
+        </label>
+
+        <button
+          type="button"
+          class="rounded-md bg-black px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-white transition hover:bg-gray-800 lg:mb-0.5"
+          (click)="onSearch()">
+          Tìm kiếm
+        </button>
+      </div>
+      <p class="mt-3 text-xs text-gray-500">
+        Chỉnh bộ lọc rồi bấm <span class="font-semibold text-gray-700">Tìm kiếm</span> để cập nhật danh sách.
+      </p>
+    </div>
+  </section>
+
+  @if (loadError()) {
+    <section class="mx-auto max-w-[1440px] px-6 pb-4 lg:px-12">
+      <p class="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{{ loadError() }}</p>
+    </section>
+  }
+
+  <section class="mx-auto max-w-[1440px] px-6 pb-20 lg:px-12">
+    @if (isLoading()) {
+      <p class="py-12 text-center text-sm font-medium text-gray-500">Đang tải…</p>
+    } @else if (products().length === 0) {
+      <p class="py-12 text-center text-sm text-gray-500">Không có sản phẩm phù hợp.</p>
+    } @else {
+      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        @for (product of products(); track product.id) {
+          <app-product-card
+            [product]="product"
+            [inWishlist]="wishlistRecord()[product.id] ?? false"
+            (wishlistChanged)="onWishlistChanged($event)" />
+        }
+      </div>
+    }
+  </section>
+</main>
+
+<app-footer />

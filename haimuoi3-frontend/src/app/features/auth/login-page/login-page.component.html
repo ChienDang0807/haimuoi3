@@ -1,0 +1,124 @@
+<main class="flex h-screen w-full overflow-hidden font-sans text-slate-900">
+  <!-- Left: editorial image (desktop only) -->
+  <section class="relative hidden min-h-0 bg-black lg:flex lg:w-3/5">
+    <img
+      src="/assets/images/login/login.png"
+      alt="haimuoi2"
+      class="absolute inset-0 h-full w-full object-contain"
+      width="1200"
+      height="1600"
+    />
+  </section>
+
+  <!-- Right: login form -->
+  <section
+    class="relative flex h-full min-h-0 w-full flex-col items-center justify-center overflow-y-auto bg-white px-8 py-10 md:px-12 lg:w-2/5 lg:px-16">
+    <a
+      routerLink="/"
+      class="absolute right-6 top-6 z-10 text-slate-400 transition-colors hover:text-slate-900"
+      aria-label="Close and go home">
+      <span class="material-symbols-outlined">close</span>
+    </a>
+
+    <div class="relative w-full max-w-md">
+      <div class="mb-12 lg:hidden">
+        <h1 class="text-3xl font-black tracking-tighter text-[#455768] uppercase">haimuoi2</h1>
+      </div>
+
+      <div class="mb-12">
+        <h2 class="mb-4 text-4xl font-black tracking-tighter text-slate-900">Account Login</h2>
+        <p class="text-lg text-slate-500">Enter your precision credentials to continue.</p>
+      </div>
+
+      @if (errorMessage()) {
+        <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700">
+          {{ errorMessage() }}
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+        <div>
+          <label class="mb-2 block text-[10px] font-black uppercase tracking-widest text-slate-500" for="login-email-or-phone">
+            Email or phone
+          </label>
+          <input
+            id="login-email-or-phone"
+            formControlName="emailOrPhone"
+            type="text"
+            autocomplete="username"
+            placeholder="you@example.com or phone"
+            class="w-full rounded-lg border-none bg-slate-100 px-6 py-4 text-left text-slate-800 transition-all placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#455768]/30"
+          />
+        </div>
+
+        <div>
+          <div class="mb-2 flex items-center justify-between">
+            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500" for="login-password">Password</label>
+            <span
+              class="cursor-not-allowed text-[10px] font-black uppercase tracking-widest text-slate-400"
+              title="Coming soon">
+              Forgot password?
+            </span>
+          </div>
+          <input
+            id="login-password"
+            formControlName="password"
+            type="password"
+            autocomplete="current-password"
+            placeholder="••••••••"
+            class="w-full rounded-lg border-none bg-slate-100 px-6 py-4 text-left text-slate-800 transition-all placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#455768]/30"
+          />
+        </div>
+
+        <button
+          type="submit"
+          [disabled]="form.invalid || isLoading()"
+          class="flex w-full transform items-center justify-center gap-2 rounded-lg bg-[#455768] py-5 text-xs font-black uppercase tracking-widest text-white shadow-lg shadow-[#455768]/20 transition-all duration-200 enabled:hover:scale-[0.98] enabled:hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60">
+          @if (isLoading()) {
+            <span class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
+          }
+          Sign In
+        </button>
+      </form>
+
+      <div class="relative my-12">
+        <div class="absolute inset-0 flex items-center">
+          <div class="w-full border-t border-slate-200"></div>
+        </div>
+        <div class="relative flex justify-center">
+          <span class="bg-white px-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
+            Social Authentication
+          </span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <button
+          type="button"
+          disabled
+          class="flex cursor-not-allowed items-center justify-center gap-2 rounded-lg border border-slate-200 py-4 opacity-60 transition-colors"
+          title="Coming soon">
+          <span class="text-[12px] font-black uppercase tracking-widest text-slate-800">Google</span>
+        </button>
+        <button
+          type="button"
+          disabled
+          class="flex cursor-not-allowed items-center justify-center gap-2 rounded-lg border border-slate-200 py-4 opacity-60 transition-colors"
+          title="Coming soon">
+          <span class="text-[12px] font-black uppercase tracking-widest text-slate-800">Facebook</span>
+        </button>
+      </div>
+
+      <div class="mt-12 text-center">
+        <p class="font-medium text-slate-500">
+          New to the system?
+          <a
+            routerLink="/register"
+            class="ml-2 text-[12px] font-black uppercase tracking-widest text-[#455768] underline-offset-4 hover:underline">
+            Sign Up
+          </a>
+        </p>
+      </div>
+    </div>
+  </section>
+</main>

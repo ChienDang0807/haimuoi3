@@ -1,0 +1,96 @@
+<div class="flex min-h-screen bg-background text-on-background">
+  <app-admin-sidebar />
+
+  <main class="flex-1 flex flex-col min-w-0">
+    <app-admin-header pageTitle="Shop — Categories" searchPlaceholder="Search resources..." />
+
+    <div class="p-12">
+      <div class="max-w-7xl">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+          <div>
+            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 mb-2 block">Shop catalog</span>
+            <h1 class="text-6xl font-black tracking-tighter leading-none text-on-surface">Categories</h1>
+            <p class="text-secondary text-sm mt-4 max-w-xl">
+              Create shop-level categories (optional link to a global category). Stored in
+              <code class="text-xs">shop_categories</code>. Requires SHOP_OWNER.
+            </p>
+          </div>
+          <button
+            type="button"
+            class="group flex items-center gap-3 bg-white text-on-surface px-8 py-5 rounded-xl shadow-xl shadow-surface-tint/5 hover:bg-surface-container-low transition-all border border-outline-variant/50"
+            (click)="openAddCategory()">
+            <span class="material-symbols-outlined font-black">add</span>
+            <span class="font-black uppercase text-xs tracking-widest">Add shop category</span>
+          </button>
+        </div>
+
+        @if (loadError()) {
+          <div class="mb-6 rounded-lg border border-error/30 bg-error-container/30 px-6 py-4 text-sm text-on-surface">
+            {{ loadError() }}
+          </div>
+        }
+
+        <div class="bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+          <div class="grid grid-cols-12 gap-4 px-8 py-4 bg-surface-container border-b border-outline-variant">
+            <div class="col-span-5 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Category</div>
+            <div class="col-span-2 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Status</div>
+            <div class="col-span-2 text-[10px] font-black uppercase tracking-widest text-on-surface-variant text-center">
+              Global
+            </div>
+            <div class="col-span-3 text-[10px] font-black uppercase tracking-widest text-on-surface-variant text-right">
+              Shop category id
+            </div>
+          </div>
+
+          <div class="divide-y divide-outline-variant">
+            @if (isLoading()) {
+              <div class="px-8 py-10 text-secondary text-sm">Loading…</div>
+            } @else if (categories().length === 0) {
+              <div class="px-8 py-10 text-secondary text-sm">
+                No shop categories yet. Create one above, then assign products to it.
+              </div>
+            } @else {
+              @for (row of categories(); track trackById($index, row)) {
+                <div class="grid grid-cols-12 gap-4 px-8 py-5 items-center hover:bg-surface-container-low transition-colors">
+                  <div class="col-span-5 flex items-center gap-4">
+                    <div class="w-10 h-10 rounded bg-primary-container flex items-center justify-center text-primary">
+                      <span class="material-symbols-outlined">category</span>
+                    </div>
+                    <div>
+                      <h4 class="font-black text-on-surface tracking-tight">{{ row.name }}</h4>
+                      <p class="text-xs text-secondary font-mono">{{ row.slug }}</p>
+                    </div>
+                  </div>
+
+                  <div class="col-span-2">
+                    <span [class]="statusBadgeClass(row.active)">{{ statusLabel(row.active) }}</span>
+                  </div>
+
+                  <div
+                    class="col-span-2 text-center text-xs text-on-surface truncate"
+                    [title]="row.globalCategoryName ?? row.globalCategoryId ?? ''">
+                    {{ row.globalCategoryName ?? row.globalCategoryId ?? '—' }}
+                  </div>
+
+                  <div class="col-span-3 text-right text-xs font-mono text-on-surface-variant truncate" [title]="row.shopCategoryId">
+                    {{ row.shopCategoryId }}
+                  </div>
+                </div>
+              }
+            }
+          </div>
+
+          <div class="px-8 py-4 bg-surface-container-low">
+            <button
+              type="button"
+              class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors"
+              (click)="openAddCategory()">
+              <span class="material-symbols-outlined text-sm">add_circle</span>
+              Quick add shop category
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

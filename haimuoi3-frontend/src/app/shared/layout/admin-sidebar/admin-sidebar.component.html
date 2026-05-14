@@ -1,0 +1,35 @@
+<aside class="docked h-screen left-0 w-72 flex flex-col bg-surface-container dark:bg-surface-container sticky top-0 border-none">
+  <div class="px-8 py-10">
+    <div class="flex items-center gap-3 mb-2">
+      <div class="w-10 h-10 bg-primary flex items-center justify-center rounded-lg">
+        <span class="material-symbols-outlined text-on-primary">precision_manufacturing</span>
+      </div>
+      <div>
+        <h1 class="text-2xl font-black tracking-tighter text-on-surface dark:text-on-surface">Titanium Shop</h1>
+        <p class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant opacity-60">Management Console</p>
+      </div>
+    </div>
+  </div>
+
+  <nav class="flex-1 space-y-1">
+    @for (item of navItems; track item.id) {
+      <a 
+        [routerLink]="item.route"
+        routerLinkActive="text-primary dark:text-primary-fixed-dim font-black bg-primary/5 dark:bg-primary-fixed-dim/10 border-r-4 border-primary dark:border-primary-fixed-dim scale-95"
+        [routerLinkActiveOptions]="{ exact: false }"
+        class="text-on-surface-variant dark:text-on-surface-variant font-medium px-6 py-4 flex items-center gap-4 hover:bg-surface-variant/50 transition-all">
+        <span class="material-symbols-outlined">{{ item.icon }}</span>
+        <span class="text-[10px] font-black uppercase tracking-widest">{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+
+  <div class="p-6">
+    <div class="bg-surface p-4 rounded-xl border border-outline-variant/30">
+      <p class="text-[10px] font-black uppercase tracking-widest mb-1">System Load</p>
+      <div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+        <div class="h-full bg-primary w-2/3"></div>
+      </div>
+    </div>
+  </div>
+</aside>

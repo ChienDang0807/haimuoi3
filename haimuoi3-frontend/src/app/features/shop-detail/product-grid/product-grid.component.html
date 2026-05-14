@@ -1,0 +1,47 @@
+<section class="max-w-screen-2xl mx-auto px-8 py-24">
+  <div class="flex justify-between items-end mb-12">
+    <div>
+      <span class="text-[10px] font-black uppercase tracking-widest text-primary block mb-2">Curated Selection</span>
+      <h2 class="text-5xl font-black tracking-tighter uppercase text-on-surface">Shop Products</h2>
+    </div>
+    
+    <div class="flex gap-4">
+      <button 
+        class="text-xs font-black uppercase tracking-widest pb-1 transition-colors"
+        [class.border-b-2]="activeFilter() === 'all'"
+        [class.border-primary]="activeFilter() === 'all'"
+        [class.text-secondary]="activeFilter() !== 'all'"
+        [class.hover:text-primary]="activeFilter() !== 'all'"
+        (click)="setFilter('all')">
+        All Items
+      </button>
+      <button 
+        class="text-xs font-black uppercase tracking-widest pb-1 transition-colors"
+        [class.border-b-2]="activeFilter() === 'best-picks'"
+        [class.border-primary]="activeFilter() === 'best-picks'"
+        [class.text-secondary]="activeFilter() !== 'best-picks'"
+        [class.hover:text-primary]="activeFilter() !== 'best-picks'"
+        (click)="setFilter('best-picks')">
+        Best Picks
+      </button>
+      <button 
+        class="text-xs font-black uppercase tracking-widest pb-1 transition-colors"
+        [class.border-b-2]="activeFilter() === 'limited'"
+        [class.border-primary]="activeFilter() === 'limited'"
+        [class.text-secondary]="activeFilter() !== 'limited'"
+        [class.hover:text-primary]="activeFilter() !== 'limited'"
+        (click)="setFilter('limited')">
+        Limited
+      </button>
+    </div>
+  </div>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+    @for (product of filteredProducts; track product.id) {
+      <app-product-card
+        [product]="product"
+        [inWishlist]="wishlistRecord()[product.id] ?? false"
+        (wishlistChanged)="wishlistChanged.emit($event)" />
+    }
+  </div>
+</section>

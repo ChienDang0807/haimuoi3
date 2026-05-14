@@ -1,0 +1,134 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgresql
+    restart: "no"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - '5431:5432'
+    networks:
+      - haimuoi3-network
+
+  mongo:
+    image: mongo:6-jammy
+    container_name: mongodb
+    ports:
+      - "27010:27017"
+    environment:
+      MONGO_INITDB_DATABASE: haimuoi2-monggo
+    volumes:
+      - mongo:/data/db
+    networks:
+      - haimuoi3-network
+
+  redis:
+    image: redis:7.4.5
+    container_name: redis
+    hostname: redis
+    ports:
+      - '6319:6379'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB;FLUSHALL
+    networks:
+      - haimuoi3-network
+    volumes:
+      - redis_data:/data
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=changeme               # Mật khẩu cho user 'elastic'
+      - bootstrap.memory_lock=true
+      - xpack.security.transport.ssl.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    networks:
+      - haimuoi3-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.4
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=IDKaH7e3QKcGY+BsuVOy
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - haimuoi3-network
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    ports:
+      - "9000:9000"  # API
+      - "9001:9001"  # Console UI
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio:/data/minio
+    command: server /data/minio --address ":9000" --console-address ":9001"
+    networks:
+      - haimuoi3-network
+
+  # Backend Spring Boot (build: Dockerfile trong repo)
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: haimuoi3-backend:local
+    container_name: haimuoi3-backend
+    restart: unless-stopped
+    ports:
+      - "8090:8090"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      DATABASE_HOST: postgres
+      DATABASE_PORT: "5432"
+      # Trùng user mặc định của service postgres (DB mặc định thường là "postgres").
+      # Nếu bạn tạo DB riêng (vd. POSTGRES_DB=haimuoi3-backend), đổi DATABASE_NAME cho khớp.
+      DATABASE_NAME: haimuoi3-backend
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      MONGODB_HOST: mongo
+      MONGODB_PORT: "27017"
+      MONGODB_DATABASE: haimuoi3-backend
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:4200}
+      JWT_SECRET: ${JWT_SECRET}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+    depends_on:
+      - postgres
+      - mongo
+    networks:
+      - haimuoi3-network
+
+networks:
+  haimuoi3-network:
+    driver: bridge
+
+volumes:
+  postgres:
+  mongo:
+  esdata:
+  redis_data:
+  minio:

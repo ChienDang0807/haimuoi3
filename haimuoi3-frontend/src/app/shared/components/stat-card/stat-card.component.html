@@ -1,0 +1,36 @@
+<div 
+  class="bg-surface rounded-xl shadow-lg shadow-primary/5 p-8 flex flex-col justify-between relative overflow-hidden group"
+  [ngClass]="stat().backgroundColor ? stat().backgroundColor : ''">
+  
+  @if (stat().icon) {
+    <div class="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+      <span class="material-symbols-outlined text-[120px]" style="font-variation-settings: 'FILL' 1;">
+        {{ stat().icon }}
+      </span>
+    </div>
+  }
+
+  <div class="z-10">
+    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-secondary mb-4">{{ stat().label }}</p>
+    <h3 class="text-4xl font-black tracking-tighter">{{ stat().value }}</h3>
+    
+    @if (stat().trend) {
+      @let trend = stat().trend!;
+      <div class="mt-2 flex items-center gap-1">
+        @if (trend.direction === 'up') {
+          <span class="text-emerald-600 font-bold flex items-center gap-1 text-sm">
+            <span class="material-symbols-outlined text-sm">trending_up</span>
+            {{ trend.value }}
+          </span>
+        } @else if (trend.direction === 'down') {
+          <span class="text-error font-bold flex items-center gap-1 text-sm">
+            <span class="material-symbols-outlined text-sm">trending_down</span>
+            {{ trend.value }}
+          </span>
+        } @else {
+          <span class="text-secondary font-bold text-sm">{{ trend.value }}</span>
+        }
+      </div>
+    }
+  </div>
+</div>

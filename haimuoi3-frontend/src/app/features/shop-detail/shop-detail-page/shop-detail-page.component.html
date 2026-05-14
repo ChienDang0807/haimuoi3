@@ -1,0 +1,38 @@
+<app-header />
+
+<main class="min-h-screen bg-background">
+  @if (shop(); as shopData) {
+    <app-shop-header 
+      [shop]="shopData"
+      (follow)="onFollow($event)"
+      (message)="onMessage($event)" />
+
+    <app-product-grid [products]="products()" [wishlistRecord]="wishlistRecord()" (wishlistChanged)="onWishlistChanged($event)" />
+
+    <section class="w-full h-[500px] overflow-hidden bg-surface-container mb-24">
+      <div class="w-full h-full relative">
+        <img 
+          alt="Atmospheric Banner" 
+          src="https://lh3.googleusercontent.com/aida/ADBb0ug3NuIzwhDzGjGOenDH8pVdtBVMlxpLiwNK9VlYQ2Q_eUoa4rmtcwO9GtPZDaEku5dHaNZ6ZFJBK8ZeQEnKXCDHLYXuYVMu80reLsMUu1rj_aXIIf02DDYtkNxMcbTHkknSBe7Sm68BT5jx5bpxdLD_dP2onW8wgGOr2T1ChzH-Nel_j4Zh5yrnJFXYVJQOnJhZVfAckS9ZL_l3DCvcKX8bKqy2cr2eTPk3vPg9dYoC9ZQ7TtnJAk8gJK4"
+          class="w-full h-full object-cover opacity-90" />
+        <div class="absolute inset-0 bg-gradient-to-r from-on-background/80 to-transparent flex items-center px-12 md:px-24">
+          <div class="max-w-xl text-surface">
+            <span class="text-xs font-black uppercase tracking-[0.3em] mb-4 block">Precision Engineered</span>
+            <h2 class="text-6xl font-black tracking-tighter leading-none mb-8">CRAFTED FOR ENDURANCE</h2>
+            <button class="bg-surface text-on-surface px-10 py-4 rounded-lg font-black uppercase text-xs tracking-widest shadow-2xl">
+              Explore Archive
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    @if (reviewStats(); as stats) {
+      <app-shop-reviews-section 
+        [reviews]="reviews()"
+        [stats]="stats" />
+    }
+  }
+</main>
+
+<app-footer />

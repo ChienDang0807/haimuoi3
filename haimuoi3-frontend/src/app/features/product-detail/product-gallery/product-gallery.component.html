@@ -1,0 +1,33 @@
+<div class="space-y-4">
+  <div class="aspect-[4/3] rounded-xl overflow-hidden bg-white border border-primary/10 group relative">
+    <img 
+      [src]="mainImage" 
+      [alt]="'Product image ' + (selectedImageIndex() + 1)"
+      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+    
+    @if (badge()) {
+      <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-primary shadow-sm uppercase tracking-wider">
+        {{ badge() }}
+      </div>
+    }
+  </div>
+  
+  <div class="grid grid-cols-4 gap-4">
+    @for (image of images(); track image; let i = $index) {
+      <div 
+        class="aspect-square rounded-lg overflow-hidden cursor-pointer transition-opacity"
+        [class.border-2]="i === selectedImageIndex()"
+        [class.border-primary]="i === selectedImageIndex()"
+        [class.border]="i !== selectedImageIndex()"
+        [class.border-primary/10]="i !== selectedImageIndex()"
+        [class.opacity-70]="i !== selectedImageIndex()"
+        [class.hover:opacity-100]="i !== selectedImageIndex()"
+        (click)="selectImage(i)">
+        <img 
+          [src]="image" 
+          [alt]="'Product thumbnail ' + (i + 1)"
+          class="w-full h-full object-cover" />
+      </div>
+    }
+  </div>
+</div>

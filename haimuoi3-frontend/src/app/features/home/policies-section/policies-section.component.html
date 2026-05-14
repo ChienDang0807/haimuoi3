@@ -1,0 +1,18 @@
+<section class="mx-auto max-w-[1440px] px-6 py-24 text-center lg:px-12">
+  <span class="text-[10px] font-bold tracking-[0.3em] text-gray-400 uppercase">Customer Care</span>
+  <h2 class="mt-4 mb-20 text-4xl font-medium tracking-tighter uppercase">Chính Sách & Ưu Đãi</h2>
+
+  <!-- Main Policies (Large Cards) -->
+  <div class="mb-12 grid grid-cols-1 gap-12 text-left lg:grid-cols-2">
+    @for (policy of mainPolicies; track policy.id) {
+      <app-policy-card [policy]="policy" variant="large" />
+    }
+  </div>
+
+  <!-- Benefit Policies (Small Cards) -->
+  <div class="grid grid-cols-1 gap-8 text-left md:grid-cols-4">
+    @for (policy of benefitPolicies; track policy.id) {
+      <app-policy-card [policy]="policy" variant="small" />
+    }
+  </div>
+</section>

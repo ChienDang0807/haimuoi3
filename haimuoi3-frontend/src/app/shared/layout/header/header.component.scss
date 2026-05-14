@@ -1,0 +1,18 @@
+:host {
+  display: block;
+}
+
+.header-icon-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+
+  svg {
+    display: block;
+  }
+}
+
+.wishlist-menu-root .header-icon-action svg {
+  transform: translateY(1px);
+}

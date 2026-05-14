@@ -1,0 +1,316 @@
+<div class="bg-background text-on-background min-h-screen flex">
+<!-- SideNavBar Component -->
+<aside class="fixed left-0 top-0 h-screen w-64 border-r border-slate-200/50 dark:border-slate-800/50 bg-slate-50 dark:bg-slate-950 flex flex-col p-6 gap-y-4 z-50">
+<div class="mb-8">
+<h1 class="text-2xl font-black tracking-tighter text-slate-900 dark:text-white">Titanium Graphite</h1>
+<p class="font-inter text-xs font-black uppercase tracking-widest text-slate-500">Super Admin</p>
+</div>
+<nav class="flex-1 flex flex-col gap-y-2">
+<!-- Active Tab: Tenants -->
+<a class="bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-lg shadow-lg shadow-slate-900/20 flex items-center gap-3 p-3 transition-transform duration-200 active:scale-98" routerLink="/sysadmin/dashboard">
+<span class="material-symbols-outlined" data-icon="business_center">business_center</span>
+<span class="font-inter text-sm font-medium uppercase tracking-widest">Tenants</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:translate-x-1 flex items-center gap-3 p-3 transition-transform duration-200 active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-inter text-sm font-medium uppercase tracking-widest">Analytics</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:translate-x-1 flex items-center gap-3 p-3 transition-transform duration-200 active:scale-98" routerLink="/sysadmin/users">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-inter text-sm font-medium uppercase tracking-widest">Users</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:translate-x-1 flex items-center gap-3 p-3 transition-transform duration-200 active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-inter text-sm font-medium uppercase tracking-widest">Settings</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-y-2 border-t border-slate-200 pt-6">
+<a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 flex items-center gap-3 p-3" href="#">
+<span class="material-symbols-outlined" data-icon="support_agent">support_agent</span>
+<span class="font-inter text-sm font-medium uppercase tracking-widest">Support</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 flex items-center gap-3 p-3" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-inter text-sm font-medium uppercase tracking-widest">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 ml-64 min-h-screen relative flex flex-col">
+<!-- TopNavBar Component -->
+<header class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-40 flex justify-between items-center px-8 h-16 w-full shadow-sm">
+<div class="flex items-center gap-6">
+<h2 class="text-xl font-black tracking-tighter text-slate-800 dark:text-slate-100 font-inter">Titanium Admin</h2>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" data-icon="search">search</span>
+<input class="bg-surface-container border-none rounded-lg pl-10 pr-4 py-1.5 w-64 text-sm focus:ring-2 focus:ring-primary/20 transition-all outline-none" placeholder="Search tenants..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-slate-200">
+<img class="w-full h-full object-cover" data-alt="Close-up portrait of a professional male executive in a neutral studio setting with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqKsZqIwsgy0hOmUb35eop11GGFNYQ9rgXbxxAOEr-ihnkdFiFEuUadxEiCpiAope9swCFtDPV7qBZje4vZLVVJTb3PJHzXtLq-jvdbFiDMssiIfLHyk7TTSOiWVN_o1lpdYi-r4J43qik9LX73BwwJ2qp2TqAc5GszJi-mQl8UinytBQjKbf9GQr-PtjDG0gufC0KPqu7But4xhw0qswaXujpEHJlS2E0rvwh0hviBhTDapo48HZ6JuVdtav7pIpNjqPxEepPe0s"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-12 max-w-7xl mx-auto w-full flex flex-col gap-12">
+<!-- Hero / Header Section -->
+<div class="flex justify-between items-end">
+<div class="space-y-2">
+<p class="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Management Console</p>
+<h1 class="text-[4.5rem] leading-[1.1] font-black tracking-tighter text-on-surface">Tenants</h1>
+<p class="text-slate-500 max-w-xl text-lg font-medium leading-relaxed">
+                        Orchestrate your e-commerce ecosystem. Manage vendor lifecycles, monitor revenue performance, and scale global operations from a single pane of glass.
+                    </p>
+</div>
+<button class="bg-primary text-white rounded-lg px-8 py-4 font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20 hover:translate-y-[-2px] active:scale-95 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                    New Tenant
+                </button>
+</div>
+<!-- Stats Tonal Row -->
+<div class="grid grid-cols-4 gap-6">
+<div class="bg-surface-container p-8 rounded-xl space-y-4">
+<p class="text-[10px] font-black uppercase tracking-widest text-slate-500">Active Tenants</p>
+<p class="text-4xl font-black tracking-tighter">1,284</p>
+<div class="flex items-center gap-1 text-emerald-600 text-xs font-bold">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+                        +12% vs last month
+                    </div>
+</div>
+<div class="bg-surface-container p-8 rounded-xl space-y-4">
+<p class="text-[10px] font-black uppercase tracking-widest text-slate-500">Total GMV</p>
+<p class="text-4xl font-black tracking-tighter">$4.2M</p>
+<div class="flex items-center gap-1 text-emerald-600 text-xs font-bold">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+                        +8.4%
+                    </div>
+</div>
+<div class="bg-surface-container p-8 rounded-xl space-y-4">
+<p class="text-[10px] font-black uppercase tracking-widest text-slate-500">Average ARPU</p>
+<p class="text-4xl font-black tracking-tighter">$328</p>
+<div class="flex items-center gap-1 text-slate-400 text-xs font-bold">
+<span class="material-symbols-outlined text-sm" data-icon="remove">remove</span>
+                        Stable
+                    </div>
+</div>
+<div class="bg-surface-container p-8 rounded-xl space-y-4">
+<p class="text-[10px] font-black uppercase tracking-widest text-slate-500">Pending Approvals</p>
+<p class="text-4xl font-black tracking-tighter">14</p>
+<div class="flex items-center gap-1 text-on-tertiary-fixed-variant text-xs font-bold">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+                        Action Required
+                    </div>
+</div>
+</div>
+<!-- Table Section -->
+<section class="bg-surface-container-low rounded-xl overflow-hidden">
+<div class="p-8 border-b border-slate-100 flex justify-between items-center bg-white">
+<div class="flex gap-4">
+<button class="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest">All</button>
+<button class="text-slate-400 hover:text-slate-900 px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-colors">Active</button>
+<button class="text-slate-400 hover:text-slate-900 px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-colors">Suspended</button>
+</div>
+<div class="flex gap-2">
+<button class="p-2 text-slate-400 hover:bg-slate-50 rounded-lg transition-colors">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+<button class="p-2 text-slate-400 hover:bg-slate-50 rounded-lg transition-colors">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">
+<th class="px-8 py-4">Vendor Name</th>
+<th class="px-8 py-4">Status</th>
+<th class="px-8 py-4">Plan</th>
+<th class="px-8 py-4">Revenue (MTD)</th>
+<th class="px-8 py-4">Created Date</th>
+<th class="px-8 py-4 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 bg-white">
+<!-- Row 1 -->
+<tr class="hover:bg-slate-50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center font-black text-primary text-sm">
+                                            LV
+                                        </div>
+<div>
+<p class="font-bold text-on-surface">Luxe Vibe Boutique</p>
+<p class="text-xs text-slate-500">luxe-vibe.titanium.com</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center gap-1 px-2 py-1 bg-emerald-50 text-emerald-700 rounded text-[10px] font-black uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                        Active
+                                    </span>
+</td>
+<td class="px-8 py-6">
+<p class="text-sm font-semibold text-slate-600">Enterprise Gold</p>
+</td>
+<td class="px-8 py-6">
+<p class="text-sm font-black tracking-tight text-on-surface">$142,500.00</p>
+</td>
+<td class="px-8 py-6 text-sm text-slate-500">
+                                    Jan 12, 2024
+                                </td>
+<td class="px-8 py-6 text-right">
+<button class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors" data-icon="more_vert">more_vert</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-slate-50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center font-black text-primary text-sm">
+                                            UK
+                                        </div>
+<div>
+<p class="font-bold text-on-surface">Urban Kitchen Co.</p>
+<p class="text-xs text-slate-500">urban-kitchen.titanium.com</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center gap-1 px-2 py-1 bg-slate-100 text-slate-600 rounded text-[10px] font-black uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                                        Suspended
+                                    </span>
+</td>
+<td class="px-8 py-6">
+<p class="text-sm font-semibold text-slate-600">Pro Tier</p>
+</td>
+<td class="px-8 py-6">
+<p class="text-sm font-black tracking-tight text-on-surface">$45,210.00</p>
+</td>
+<td class="px-8 py-6 text-sm text-slate-500">
+                                    Feb 05, 2024
+                                </td>
+<td class="px-8 py-6 text-right">
+<button class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors" data-icon="more_vert">more_vert</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-slate-50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center font-black text-primary text-sm">
+                                            NE
+                                        </div>
+<div>
+<p class="font-bold text-on-surface">Nova Electronics</p>
+<p class="text-xs text-slate-500">nova-elec.titanium.com</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center gap-1 px-2 py-1 bg-emerald-50 text-emerald-700 rounded text-[10px] font-black uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                        Active
+                                    </span>
+</td>
+<td class="px-8 py-6">
+<p class="text-sm font-semibold text-slate-600">Enterprise Platinum</p>
+</td>
+<td class="px-8 py-6">
+<p class="text-sm font-black tracking-tight text-on-surface">$890,120.00</p>
+</td>
+<td class="px-8 py-6 text-sm text-slate-500">
+                                    Oct 24, 2023
+                                </td>
+<td class="px-8 py-6 text-right">
+<button class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors" data-icon="more_vert">more_vert</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-slate-50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center font-black text-primary text-sm">
+                                            AP
+                                        </div>
+<div>
+<p class="font-bold text-on-surface">Alpha Pet Supplies</p>
+<p class="text-xs text-slate-500">alpha-pets.titanium.com</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center gap-1 px-2 py-1 bg-emerald-50 text-emerald-700 rounded text-[10px] font-black uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                        Active
+                                    </span>
+</td>
+<td class="px-8 py-6">
+<p class="text-sm font-semibold text-slate-600">Standard</p>
+</td>
+<td class="px-8 py-6">
+<p class="text-sm font-black tracking-tight text-on-surface">$12,400.00</p>
+</td>
+<td class="px-8 py-6 text-sm text-slate-500">
+                                    Mar 15, 2024
+                                </td>
+<td class="px-8 py-6 text-right">
+<button class="material-symbols-outlined text-slate-400 hover:text-primary transition-colors" data-icon="more_vert">more_vert</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-6 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
+<p class="text-xs text-slate-500 font-medium">Showing 1 to 4 of 1,284 tenants</p>
+<div class="flex gap-2">
+<button class="px-4 py-2 rounded border border-slate-200 text-xs font-bold hover:bg-white transition-colors">Previous</button>
+<button class="px-4 py-2 rounded bg-slate-900 text-white text-xs font-bold">Next</button>
+</div>
+</div>
+</section>
+<!-- Asymmetric Support Grid -->
+<div class="grid grid-cols-3 gap-12">
+<div class="col-span-2 relative overflow-hidden rounded-xl h-64 group">
+<img class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Wide shot of a minimalist, high-end corporate office with floor-to-ceiling windows and slate gray accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKhs7rjP9ySu8av72YxWitEfyMYSZB0YXOwc7pu0JxPZEjnLy6VrM6we6hiFEbZwEuunUQ92G9FJSymWJkfil_7e_bIHgZO6ZSWVp55o3OkqEE1RKRWY1qUuY9BZHyOKKTJuuDuCqzObpt4oW-08ZkXhETBb4Nx9gCz3SKyhdb3_4HDENAH8ThVUf08nsZ14mq0NVSoPafLQY1ivVNq9gcg1EGeaMvVhkMNZJSnGJdZegVjoBRyBIW-DB9N_JNKpKHMHQKvnlAg8Y"/>
+<div class="absolute inset-0 bg-gradient-to-r from-slate-900/80 to-transparent flex flex-col justify-center p-12">
+<h3 class="text-2xl font-black text-white tracking-tight mb-2">Scale with Titanium Graphite</h3>
+<p class="text-slate-300 max-w-sm text-sm">Automate onboarding and compliance checks for new vendors instantly using our advanced AI-driven screening.</p>
+<button class="mt-6 self-start text-xs font-black uppercase tracking-widest text-white border-b-2 border-white pb-1 hover:text-primary hover:border-primary transition-all">Explore Automation</button>
+</div>
+</div>
+<div class="bg-primary p-8 rounded-xl flex flex-col justify-between text-white">
+<span class="material-symbols-outlined text-4xl" data-icon="auto_awesome">auto_awesome</span>
+<div>
+<h4 class="text-xl font-black tracking-tight mb-2">Performance Insights</h4>
+<p class="text-slate-200 text-sm leading-relaxed">Vendors on Enterprise plans are currently outperforming standard tiers by 34%.</p>
+</div>
+<button class="w-full py-3 bg-white/10 hover:bg-white/20 rounded-lg text-xs font-black uppercase tracking-widest transition-colors">View Report</button>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="mt-auto p-12 bg-surface-container-low border-t border-slate-200/50">
+<div class="max-w-7xl mx-auto flex justify-between items-center">
+<div class="space-y-1">
+<p class="text-xs font-black uppercase tracking-widest text-slate-400">© 2024 Titanium Graphite Admin</p>
+<p class="text-[10px] text-slate-400 font-medium">Enterprise Tenant Management Layer v4.2.0</p>
+</div>
+<div class="flex gap-8">
+<a class="text-xs font-black uppercase tracking-widest text-slate-400 hover:text-primary" href="#">System Status</a>
+<a class="text-xs font-black uppercase tracking-widest text-slate-400 hover:text-primary" href="#">API Docs</a>
+<a class="text-xs font-black uppercase tracking-widest text-slate-400 hover:text-primary" href="#">Security</a>
+</div>
+</div>
+</footer>
+</main>
+</div>

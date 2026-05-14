@@ -1,0 +1,21 @@
+<div class="group cursor-pointer" (click)="onCardClick()">
+  <div class="mb-4 aspect-[4/4.6] overflow-hidden bg-gray-100">
+    <img 
+      [alt]="displayCategory().name" 
+      [src]="displayCategory().imageUrl"
+      class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+  </div>
+  
+  <span class="text-[10px] font-bold tracking-widest text-gray-400 uppercase">
+    {{ displayCategory().displaySubtitle }}
+  </span>
+  
+  <h3 class="mt-1 text-lg font-medium lg:text-[19px]">{{ displayCategory().name }}</h3>
+  
+  <a 
+    [routerLink]="displayCategory().navigationPath"
+    class="mt-3 inline-block border-b border-black pb-1 text-[10px] font-bold tracking-widest uppercase"
+    (click)="$event.stopPropagation()">
+    {{ displayCategory().displayCtaText }}
+  </a>
+</div>

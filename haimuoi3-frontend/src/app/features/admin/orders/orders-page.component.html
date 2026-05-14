@@ -1,0 +1,90 @@
+<div class="flex min-h-screen bg-background">
+  <app-admin-sidebar />
+
+  <main class="flex-1">
+    <app-admin-header searchPlaceholder="Search orders, customers, or tracking IDs..." />
+
+    <div class="px-12 pt-8">
+      <div class="mb-12 flex items-end justify-between">
+        <div>
+          <h1 class="text-6xl font-black leading-none tracking-tighter text-slate-900">Orders</h1>
+          <p class="mt-2 text-lg font-medium tracking-tight text-slate-500">{{ totalLabel() }}</p>
+        </div>
+      </div>
+
+      @if (loading()) {
+        <div class="flex flex-col items-center justify-center rounded-xl bg-white py-24 shadow-lg shadow-slate-900/5">
+          <span class="material-symbols-outlined mb-4 animate-spin text-5xl text-primary">progress_activity</span>
+          <p class="font-medium text-slate-500">Loading shop orders…</p>
+        </div>
+      } @else if (error()) {
+        <div class="rounded-xl border border-red-200 bg-red-50 p-8 text-center">
+          <p class="font-bold text-slate-900">Could not load orders.</p>
+          <p class="mt-2 text-sm text-slate-600">
+            Sign in as a shop owner with an active shop, or try again later.
+          </p>
+        </div>
+      } @else {
+        <div class="overflow-hidden rounded-xl bg-white shadow-2xl shadow-slate-900/5">
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse text-left">
+              <thead>
+                <tr class="border-b border-slate-100 bg-slate-50">
+                  <th class="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Order ID</th>
+                  <th class="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Date</th>
+                  <th class="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Customer</th>
+                  <th class="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Total</th>
+                  <th class="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-50">
+                @for (row of orders(); track row.id) {
+                  <tr class="transition-colors hover:bg-slate-50/50">
+                    <td class="px-8 py-6 font-black text-slate-900">#{{ row.id }}</td>
+                    <td class="px-8 py-6 font-medium text-slate-500">{{ row.createdAt | date: 'mediumDate' }}</td>
+                    <td class="px-8 py-6 font-bold text-slate-800">{{ row.customerName }}</td>
+                    <td class="px-8 py-6 font-black text-slate-900">${{ row.totalAmount | number: '1.2-2' }}</td>
+                    <td class="px-8 py-6">
+                      <span
+                        class="inline-flex items-center rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-wider"
+                        [ngClass]="statusBadgeClass(row.status)">
+                        {{ statusLabel(row.status) }}
+                      </span>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="5" class="px-8 py-16 text-center text-slate-500">No orders for your shop yet.</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          @if (orderPage(); as p) {
+            @if (p.totalPages > 1) {
+              <div class="flex flex-wrap items-center justify-between gap-4 border-t border-slate-100 px-8 py-4">
+                <span class="text-sm text-slate-500">{{ paginationLabel() }}</span>
+                <div class="flex gap-2">
+                  <button
+                    type="button"
+                    class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-bold text-slate-800 disabled:opacity-40"
+                    [disabled]="p.first"
+                    (click)="goPrev()">
+                    Previous
+                  </button>
+                  <button
+                    type="button"
+                    class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-bold text-slate-800 disabled:opacity-40"
+                    [disabled]="p.last"
+                    (click)="goNext()">
+                    Next
+                  </button>
+                </div>
+              </div>
+            }
+          }
+        </div>
+      }
+    </div>
+  </main>
+</div>

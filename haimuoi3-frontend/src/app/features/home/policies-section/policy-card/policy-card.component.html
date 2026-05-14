@@ -1,0 +1,29 @@
+@if (variant === 'large') {
+  <div class="h-full border border-gray-100 bg-gray-50 p-10">
+    <div class="mb-8 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-sm">
+      <span class="material-symbols-outlined text-gray-900"> {{ policy.icon }} </span>
+    </div>
+    
+    <h3 class="mb-4 text-xl font-bold uppercase">{{ policy.title }}</h3>
+    
+    @if (policy.items && policy.items.length > 0) {
+      @for (item of policy.items; track item.label) {
+        <p class="mb-4 text-sm leading-relaxed text-gray-600">
+          <strong>{{ item.label }}:</strong> {{ item.description }}
+        </p>
+      }
+    } @else if (policy.description) {
+      <p class="text-sm leading-relaxed text-gray-600">{{ policy.description }}</p>
+    }
+  </div>
+} @else {
+  <div class="border border-gray-100 p-8">
+    <div class="mb-6">
+      <span class="material-symbols-outlined text-gray-400"> {{ policy.icon }} </span>
+    </div>
+    
+    <h4 class="mb-4 text-xs font-bold tracking-widest uppercase">{{ policy.title }}</h4>
+    
+    <p class="text-[11px] leading-relaxed text-gray-500">{{ policy.description }}</p>
+  </div>
+}

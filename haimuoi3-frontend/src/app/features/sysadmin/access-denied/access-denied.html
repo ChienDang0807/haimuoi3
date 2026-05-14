@@ -1,0 +1,41 @@
+<main class="flex h-screen w-full items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 font-sans text-white">
+  <div class="relative text-center px-8">
+    <!-- Decorative glowing orb -->
+    <div class="absolute -top-20 left-1/2 -translate-x-1/2 h-40 w-40 rounded-full bg-red-500/10 blur-3xl"></div>
+
+    <!-- Icon -->
+    <div class="relative mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-2xl border border-red-500/20 bg-red-500/10 backdrop-blur-sm">
+      <span class="material-symbols-outlined text-5xl text-red-400">shield_lock</span>
+    </div>
+
+    <!-- Error code -->
+    <p class="mb-4 text-xs font-black uppercase tracking-[0.3em] text-red-400/80">Error 403</p>
+
+    <!-- Title -->
+    <h1 class="mb-4 text-5xl font-black tracking-tight text-white md:text-6xl">
+      Access Denied
+    </h1>
+
+    <!-- Description -->
+    <p class="mx-auto mb-10 max-w-md text-lg leading-relaxed text-slate-400">
+      You don't have the required permissions to access the System Administration panel.
+      Contact an administrator if you believe this is an error.
+    </p>
+
+    <!-- Actions -->
+    <div class="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+      <a
+        routerLink="/"
+        class="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-4 text-xs font-black uppercase tracking-widest text-slate-900 shadow-lg shadow-white/5 transition-all duration-200 hover:scale-[0.98] hover:bg-slate-100">
+        <span class="material-symbols-outlined text-sm">home</span>
+        Back to Home
+      </a>
+      <a
+        routerLink="/login"
+        class="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800/50 px-8 py-4 text-xs font-black uppercase tracking-widest text-slate-300 backdrop-blur-sm transition-all duration-200 hover:scale-[0.98] hover:border-slate-600 hover:text-white">
+        <span class="material-symbols-outlined text-sm">login</span>
+        Sign In with Another Account
+      </a>
+    </div>
+  </div>
+</main>

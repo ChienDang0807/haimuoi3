@@ -1,0 +1,95 @@
+<div class="flex min-h-screen bg-background">
+  <app-admin-sidebar />
+
+  <div class="flex-grow flex flex-col">
+    <app-admin-header pageTitle="Shop — Products" searchPlaceholder="Search resources..." />
+
+    <main class="p-12 space-y-12">
+      <div class="flex flex-col gap-6">
+        <div>
+          <button
+            type="button"
+            class="bg-primary text-on-primary px-8 py-4 rounded-lg font-black uppercase tracking-widest text-[10px] flex items-center gap-2 shadow-lg shadow-primary/20 hover:opacity-90 transition-all"
+            (click)="onNewProduct()">
+            <span class="material-symbols-outlined text-sm">add</span>
+            New Product
+          </button>
+        </div>
+        <div class="space-y-2">
+          <h1 class="text-6xl font-black tracking-tighter text-on-surface">Products</h1>
+          <p class="text-lg text-secondary max-w-2xl leading-relaxed">
+            Shop owner: add catalog items (LEGACY) and manage inventory. Requires login as SHOP_OWNER.
+          </p>
+        </div>
+      </div>
+
+      @if (loadError()) {
+        <div class="rounded-lg border border-error/30 bg-error-container/30 px-6 py-4 text-sm text-on-surface">
+          {{ loadError() }}
+        </div>
+      }
+
+      <div class="bg-white rounded-xl shadow-2xl shadow-primary/5 overflow-hidden border border-outline-variant/10">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-surface-container-low border-b border-outline-variant/50">
+                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Image</th>
+                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Name</th>
+                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">SKU</th>
+                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Category</th>
+                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Price</th>
+                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-outline-variant/30">
+              @if (isLoading()) {
+                <tr>
+                  <td colspan="6" class="px-8 py-10 text-secondary text-sm">Loading…</td>
+                </tr>
+              } @else if (products().length === 0) {
+                <tr>
+                  <td colspan="6" class="px-8 py-10 text-secondary text-sm">No products yet. Use New Product to create one.</td>
+                </tr>
+              } @else {
+                @for (row of products(); track row.id) {
+                  <tr class="hover:bg-surface-container-lowest transition-colors group">
+                    <td class="px-8 py-6">
+                      <div class="w-16 h-16 rounded-lg bg-surface-container overflow-hidden flex items-center justify-center">
+                        @if (row.productPictures?.length) {
+                          <img [src]="row.productPictures![0].url" [alt]="row.name" class="w-full h-full object-cover" />
+                        } @else {
+                          <span class="material-symbols-outlined text-on-surface-variant">inventory</span>
+                        }
+                      </div>
+                    </td>
+                    <td class="px-8 py-6">
+                      <p class="font-bold text-on-surface tracking-tight">{{ row.name }}</p>
+                      <p class="text-sm text-secondary line-clamp-2">{{ row.description }}</p>
+                    </td>
+                    <td class="px-8 py-6 font-mono text-sm text-on-surface-variant">{{ row.sku ?? '—' }}</td>
+                    <td class="px-8 py-6">
+                      <span
+                        class="px-3 py-1 bg-secondary-container text-on-secondary-container text-[10px] font-black uppercase tracking-widest rounded-full">
+                        {{ row.globalCategoryName ?? row.globalCategoryId ?? '—' }}
+                      </span>
+                    </td>
+                    <td class="px-8 py-6 font-black text-on-surface">{{ formatPrice(row.price) }}</td>
+                    <td class="px-8 py-6">
+                      <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">{{
+                          row.status ?? '—'
+                        }}</span>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

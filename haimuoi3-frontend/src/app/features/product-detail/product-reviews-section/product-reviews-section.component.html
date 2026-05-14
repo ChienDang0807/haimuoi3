@@ -1,0 +1,38 @@
+<section class="py-16 border-t border-primary/10">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+    <div>
+      <h3 class="text-2xl font-black text-slate-900">Customer Reviews</h3>
+      <p class="text-slate-500">Real feedback from verified purchasers</p>
+    </div>
+    
+    <div class="flex items-center gap-8 bg-white p-6 rounded-2xl shadow-sm border border-primary/5">
+      <div class="text-center">
+        <p class="text-4xl font-black text-primary">{{ stats().averageRating.toFixed(1) }}</p>
+        <app-rating-display [rating]="stats().averageRating" size="sm" />
+      </div>
+      
+      <div class="space-y-1 w-48">
+        @for (item of ratingPercentages; track item.rating) {
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold w-4">{{ item.rating }}</span>
+            <div class="flex-1 h-2 bg-primary/10 rounded-full overflow-hidden">
+              <div class="bg-primary h-full" [style.width.%]="item.percentage"></div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    @for (review of reviews(); track review.id) {
+      <app-review-card [review]="review" />
+    }
+  </div>
+
+  <div class="mt-8 text-center">
+    <button class="px-8 py-3 rounded-lg border border-primary text-primary font-bold hover:bg-primary/5 transition-colors">
+      View All {{ stats().totalReviews.toLocaleString() }} Reviews
+    </button>
+  </div>
+</section>

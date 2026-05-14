@@ -1,0 +1,29 @@
+:host {
+  display: block;
+}
+
+// Ẩn thanh scrollbar nhưng vẫn cho phép cuộn
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+  
+  &::-webkit-scrollbar {
+    display: none;           /* Chrome, Safari and Opera */
+  }
+}
+
+// Giúp ảnh trong card mượt hơn khi snap
+.snap-start {
+  scroll-snap-align: start;
+}
+
+button {
+  // Đảm bảo nút tròn và căn giữa icon
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  
+  // Chống người dùng click quá nhanh làm lag scroll
+  user-select: none;
+}

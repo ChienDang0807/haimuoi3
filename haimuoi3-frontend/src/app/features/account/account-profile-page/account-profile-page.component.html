@@ -1,0 +1,367 @@
+<app-header />
+
+<div class="min-h-screen bg-background text-on-background">
+  <app-account-sidebar />
+
+  <main class="min-h-screen pt-20 md:pl-72">
+    <div class="mx-auto max-w-7xl space-y-12 p-8 lg:p-12">
+      <section>
+        <div class="mb-8 flex flex-col">
+          <span class="mb-2 text-[10px] font-black uppercase tracking-widest text-primary">Account Overview</span>
+          <h2 class="text-5xl font-black tracking-tighter text-on-surface">Personal Profile</h2>
+        </div>
+
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          <div class="space-y-8 lg:col-span-2">
+            <div class="rounded-xl bg-surface p-8 shadow-sm transition-all duration-300 hover:shadow-lg">
+              <div class="mb-8 flex items-start justify-between">
+                <div>
+                  <h3 class="text-xl font-bold tracking-tight text-on-surface">Personal Details</h3>
+                  <p class="text-sm text-secondary">Manage your public information and identity.</p>
+                </div>
+                @if (!isEditing()) {
+                  <button
+                    class="text-xs font-black uppercase tracking-widest text-primary hover:underline"
+                    type="button"
+                    [disabled]="isLoadingProfile() || !profile()"
+                    (click)="enterEdit()">
+                    Edit Info
+                  </button>
+                }
+              </div>
+
+              @if (isLoadingProfile()) {
+                <div class="grid grid-cols-1 gap-y-6 gap-x-12 md:grid-cols-2">
+                  @for (i of [1, 2, 3, 4]; track i) {
+                    <div class="space-y-2">
+                      <div class="h-3 w-24 animate-pulse rounded bg-surface-container-highest"></div>
+                      <div class="h-5 w-48 animate-pulse rounded bg-surface-container-highest"></div>
+                    </div>
+                  }
+                </div>
+              } @else if (!profile()) {
+                <p class="text-sm text-secondary">Profile is not available.</p>
+              } @else if (!isEditing()) {
+                <div class="grid grid-cols-1 gap-y-6 gap-x-12 md:grid-cols-2">
+                  <div>
+                    <label class="mb-1 block text-[10px] font-black uppercase tracking-widest text-secondary">
+                      Full Name
+                    </label>
+                    <p class="text-lg font-medium text-on-surface">{{ profile()!.fullName || '—' }}</p>
+                  </div>
+                  <div>
+                    <label class="mb-1 block text-[10px] font-black uppercase tracking-widest text-secondary">
+                      Email Address
+                    </label>
+                    <div class="flex items-center gap-2">
+                      <p class="text-lg font-medium text-on-surface">{{ profile()!.email }}</p>
+                      @if (profile()!.isVerified) {
+                        <span class="rounded bg-green-100 px-2 py-0.5 text-[10px] font-black uppercase tracking-widest text-green-700">
+                          Verified
+                        </span>
+                      } @else {
+                        <span class="rounded bg-surface-container-highest px-2 py-0.5 text-[10px] font-black uppercase tracking-widest text-secondary">
+                          Unverified
+                        </span>
+                      }
+                    </div>
+                  </div>
+                  <div>
+                    <label class="mb-1 block text-[10px] font-black uppercase tracking-widest text-secondary">
+                      Phone Number
+                    </label>
+                    <p class="text-lg font-medium text-on-surface">{{ profile()!.phone || '—' }}</p>
+                  </div>
+                  <div>
+                    <label class="mb-1 block text-[10px] font-black uppercase tracking-widest text-secondary">
+                      Date of Birth
+                    </label>
+                    <p class="text-lg font-medium text-on-surface">{{ formatDate(profile()!.dateOfBirth) }}</p>
+                  </div>
+                  <div>
+                    <label class="mb-1 block text-[10px] font-black uppercase tracking-widest text-secondary">
+                      Gender
+                    </label>
+                    <p class="text-lg font-medium text-on-surface">{{ genderLabel() }}</p>
+                  </div>
+                </div>
+              } @else {
+                <form [formGroup]="form" (ngSubmit)="saveProfile()">
+                  <div class="grid grid-cols-1 gap-y-6 gap-x-12 md:grid-cols-2">
+                    <div>
+                      <label
+                        class="mb-1 block text-[10px] font-black uppercase tracking-widest text-secondary"
+                        for="profile-full-name">
+                        Full Name
+                      </label>
+                      <input
+                        id="profile-full-name"
+                        type="text"
+                        formControlName="fullName"
+                        maxlength="100"
+                        class="w-full rounded-lg border border-outline-variant bg-surface px-3 py-2 text-lg font-medium text-on-surface focus:border-primary focus:outline-none" />
+                      @if (form.controls.fullName.touched && form.controls.fullName.invalid) {
+                        <p class="mt-1 text-xs text-error">Full name is required (max 100 chars).</p>
+                      }
+                    </div>
+                    <div>
+                      <label class="mb-1 block text-[10px] font-black uppercase tracking-widest text-secondary">
+                        Email Address
+                      </label>
+                      <p class="text-lg font-medium text-on-surface">{{ profile()!.email }}</p>
+                      <p class="mt-1 text-[11px] text-secondary">Email cannot be changed here.</p>
+                    </div>
+                    <div>
+                      <label class="mb-1 block text-[10px] font-black uppercase tracking-widest text-secondary">
+                        Phone Number
+                      </label>
+                      <p class="text-lg font-medium text-on-surface">{{ profile()!.phone || '—' }}</p>
+                      <p class="mt-1 text-[11px] text-secondary">Phone cannot be changed here.</p>
+                    </div>
+                    <div>
+                      <label
+                        class="mb-1 block text-[10px] font-black uppercase tracking-widest text-secondary"
+                        for="profile-dob">
+                        Date of Birth
+                      </label>
+                      <input
+                        id="profile-dob"
+                        type="date"
+                        formControlName="dateOfBirth"
+                        [max]="todayIso"
+                        class="w-full rounded-lg border border-outline-variant bg-surface px-3 py-2 text-lg font-medium text-on-surface focus:border-primary focus:outline-none" />
+                    </div>
+                    <div>
+                      <label
+                        class="mb-1 block text-[10px] font-black uppercase tracking-widest text-secondary"
+                        for="profile-gender">
+                        Gender
+                      </label>
+                      <select
+                        id="profile-gender"
+                        formControlName="gender"
+                        class="w-full rounded-lg border border-outline-variant bg-surface px-3 py-2 text-lg font-medium text-on-surface focus:border-primary focus:outline-none">
+                        <option value="">— Not specified —</option>
+                        @for (g of genderOptions; track g) {
+                          <option [value]="g">{{ formatGender(g) }}</option>
+                        }
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="mt-8 flex items-center gap-3">
+                    <button
+                      type="submit"
+                      class="rounded-lg bg-primary px-6 py-2.5 text-xs font-black uppercase tracking-widest text-on-primary transition-all hover:opacity-90 disabled:opacity-50"
+                      [disabled]="isSaving() || form.invalid">
+                      {{ isSaving() ? 'Updating…' : 'Update' }}
+                    </button>
+                    <button
+                      type="button"
+                      class="rounded-lg border border-outline-variant px-6 py-2.5 text-xs font-black uppercase tracking-widest text-on-surface transition-all hover:bg-surface-variant/30 disabled:opacity-50"
+                      [disabled]="isSaving()"
+                      (click)="cancelEdit()">
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              }
+            </div>
+
+            <div class="rounded-xl bg-surface p-8 shadow-sm transition-all duration-300 hover:shadow-lg">
+              <div class="mb-8 flex items-start justify-between">
+                <div>
+                  <h3 class="text-xl font-bold tracking-tight text-on-surface">Saved Addresses</h3>
+                  <p class="text-sm text-secondary">Primary shipping and billing locations.</p>
+                </div>
+                <button
+                  type="button"
+                  class="text-xs font-black uppercase tracking-widest text-primary hover:underline"
+                  (click)="openAddAddressDialog()">
+                  + Add New
+                </button>
+              </div>
+
+              @if (isLoadingAddresses()) {
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  @for (i of [1, 2]; track i) {
+                    <div class="h-32 animate-pulse rounded-lg bg-surface-container-highest"></div>
+                  }
+                </div>
+              } @else if (sortedAddresses().length === 0) {
+                <div class="rounded-lg border border-dashed border-outline-variant p-8 text-center">
+                  <p class="text-sm text-secondary">No saved addresses yet.</p>
+                </div>
+              } @else {
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  @for (a of sortedAddresses(); track trackAddressById($index, a)) {
+                    <div class="flex flex-col rounded-lg border border-outline-variant p-6 transition-all hover:bg-surface-variant/20">
+                      <div class="mb-3 flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                          <span class="material-symbols-outlined text-sm text-primary">location_on</span>
+                          <span class="text-[10px] font-black uppercase tracking-widest text-on-surface">
+                            {{ a.addressName || 'Address' }}
+                          </span>
+                        </div>
+                        @if (a.isDefault) {
+                          <span class="rounded bg-primary/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-widest text-primary">
+                            Default
+                          </span>
+                        }
+                      </div>
+                      <p class="text-sm font-medium text-on-surface">{{ a.recipientName }}</p>
+                      <p class="mt-1 text-sm leading-relaxed text-secondary">{{ formatAddress(a) }}</p>
+                      <p class="mt-2 text-xs text-secondary">{{ a.phone }}</p>
+                      <div class="mt-4 flex items-center gap-4 border-t border-outline-variant/40 pt-3">
+                        @if (!a.isDefault) {
+                          <button
+                            type="button"
+                            class="text-[10px] font-black uppercase tracking-widest text-primary hover:underline"
+                            (click)="setDefault(a)">
+                            Set default
+                          </button>
+                        }
+                        <button
+                          type="button"
+                          class="text-[10px] font-black uppercase tracking-widest text-primary hover:underline"
+                          (click)="openEditAddressDialog(a)">
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          class="ml-auto text-[10px] font-black uppercase tracking-widest text-error hover:underline"
+                          (click)="deleteAddress(a)">
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="space-y-8">
+            <div class="group relative overflow-hidden rounded-xl bg-primary p-8 text-on-primary shadow-xl shadow-primary/20">
+              <div
+                class="absolute -top-12 -right-12 h-48 w-48 rounded-full bg-white/5 blur-3xl transition-transform duration-700 group-hover:scale-125"></div>
+              <h3 class="relative z-10 mb-4 text-xl font-bold tracking-tight">Security Status</h3>
+              <div class="relative z-10 space-y-6">
+                <div class="flex items-center gap-4">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
+                    <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">
+                      verified_user
+                    </span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-bold">Account Status</p>
+                    <p class="text-xs text-on-primary/70">
+                      {{ profile()?.isVerified ? 'Verified account' : 'Unverified account' }}
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-4">
+                  <div class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
+                    <span class="material-symbols-outlined text-white">mail</span>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-sm font-bold">Email</p>
+                    <p class="truncate text-xs text-on-primary/70">{{ profile()?.email || '—' }}</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  (click)="openChangePasswordDialog()"
+                  class="w-full rounded-lg bg-white py-3 text-xs font-black tracking-widest text-primary uppercase hover:bg-primary-fixed transition-all">
+                  Change Password
+                </button>
+              </div>
+            </div>
+
+            <div class="rounded-xl bg-surface p-8 shadow-sm">
+              <h3 class="mb-6 text-xl font-bold tracking-tight text-on-surface">Linked Accounts</h3>
+              <div class="space-y-3">
+                <div class="flex items-center justify-between rounded-lg p-3">
+                  <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-secondary">mail</span>
+                    <span class="text-sm font-medium text-on-surface">Email &amp; Password</span>
+                  </div>
+                  <span class="rounded bg-green-100 px-2 py-0.5 text-[10px] font-black uppercase tracking-widest text-green-700">
+                    Active
+                  </span>
+                </div>
+                <div class="flex items-center justify-between rounded-lg p-3 opacity-60">
+                  <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-secondary">g_translate</span>
+                    <span class="text-sm font-medium text-on-surface">Google</span>
+                  </div>
+                  <span class="rounded bg-surface-container-highest px-2 py-0.5 text-[10px] font-black uppercase tracking-widest text-secondary">
+                    Coming soon
+                  </span>
+                </div>
+                <div class="flex items-center justify-between rounded-lg p-3 opacity-60">
+                  <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-secondary">facebook</span>
+                    <span class="text-sm font-medium text-on-surface">Facebook</span>
+                  </div>
+                  <span class="rounded bg-surface-container-highest px-2 py-0.5 text-[10px] font-black uppercase tracking-widest text-secondary">
+                    Coming soon
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="mb-6 flex items-end justify-between">
+          <div>
+            <span class="mb-2 block text-[10px] font-black uppercase tracking-widest text-primary">Recent Activity</span>
+            <h3 class="text-2xl font-bold tracking-tight text-on-surface">Recent Orders</h3>
+          </div>
+          <a
+            routerLink="/account/orders"
+            class="text-xs font-black uppercase tracking-widest text-primary hover:underline">
+            View all
+          </a>
+        </div>
+
+        @if (isLoadingOrders()) {
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+            @for (i of [1, 2, 3]; track i) {
+              <div class="h-40 animate-pulse rounded-xl bg-surface-container"></div>
+            }
+          </div>
+        } @else if (recentOrders().length === 0) {
+          <div class="rounded-xl border border-dashed border-outline-variant bg-surface p-10 text-center">
+            <p class="text-sm text-secondary">You have no orders yet.</p>
+          </div>
+        } @else {
+          <div class="grid grid-cols-1 gap-6 pb-12 md:grid-cols-3">
+            @for (o of recentOrders(); track trackOrderById($index, o)) {
+              <a
+                [routerLink]="['/account/orders', o.id]"
+                class="group block rounded-xl bg-surface p-6 shadow-sm transition-all hover:shadow-lg">
+                <div class="mb-4 flex items-center justify-between">
+                  <span class="text-[10px] font-black uppercase tracking-widest text-secondary">Order #{{ o.id }}</span>
+                  <span class="rounded px-2 py-1 text-[10px] font-black uppercase tracking-widest" [ngClass]="orderStatusBadgeClass(o.status)">
+                    {{ orderStatusLabel(o.status) }}
+                  </span>
+                </div>
+                <p class="mb-2 text-2xl font-black tracking-tight text-on-surface">{{ formatPrice(o.totalAmount) }}</p>
+                <p class="text-xs text-secondary">{{ formatDate(o.createdAt) }}</p>
+                @if (o.paymentMethod) {
+                  <p class="mt-3 text-xs text-secondary">
+                    <span class="material-symbols-outlined align-middle text-sm">payments</span>
+                    {{ o.paymentMethod }}
+                  </p>
+                }
+              </a>
+            }
+          </div>
+        }
+      </section>
+    </div>
+  </main>
+</div>

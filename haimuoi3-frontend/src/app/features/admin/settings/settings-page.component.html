@@ -1,0 +1,83 @@
+<div class="flex min-h-screen bg-background">
+  <app-admin-sidebar />
+  
+  <main class="flex-1 flex flex-col min-w-0">
+    <app-admin-header pageTitle="Settings" searchPlaceholder="Search configurations..." />
+    
+    <div class="p-12 space-y-12 max-w-6xl">
+      <section class="space-y-8">
+        <div>
+          <h3 class="text-6xl font-black tracking-tighter text-on-surface">Settings</h3>
+          <p class="text-lg text-secondary font-body mt-2">Manage how your storefront appears to customers across all devices.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="md:col-span-2 group relative h-80 rounded-xl overflow-hidden bg-surface-container-low flex flex-col items-center justify-center border-2 border-dashed border-outline-variant hover:border-primary transition-colors">
+            <div class="relative z-10 flex flex-col items-center gap-4 text-center px-6">
+              <span class="material-symbols-outlined text-4xl text-primary">add_a_photo</span>
+              <div>
+                <p class="text-lg font-bold">Banner Image</p>
+                <p class="text-sm text-secondary">Recommended: 1920x600px. Max size 5MB.</p>
+              </div>
+              <button class="mt-2 px-6 py-2 bg-surface text-primary border border-primary/20 rounded-lg text-sm font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all">Upload New</button>
+            </div>
+          </div>
+
+          <div class="aspect-square group relative rounded-xl overflow-hidden bg-surface-container-low flex flex-col items-center justify-center border-2 border-dashed border-outline-variant hover:border-primary transition-colors">
+            <div class="relative z-10 flex flex-col items-center gap-4 text-center px-6">
+              <span class="material-symbols-outlined text-4xl text-primary">potted_plant</span>
+              <div>
+                <p class="text-lg font-bold">Shop Logo</p>
+                <p class="text-sm text-secondary">1:1 Ratio recommended.</p>
+              </div>
+              <button class="mt-2 px-4 py-2 bg-surface text-primary border border-primary/20 rounded-lg text-sm font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all">Edit Logo</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-12 pt-12">
+        <div class="lg:col-span-4 space-y-4">
+          <h3 class="text-4xl font-black tracking-tight text-on-surface">Store Identity</h3>
+          <p class="text-on-surface-variant font-body">Public-facing information that defines your brand's voice and reachability.</p>
+        </div>
+
+        <div class="lg:col-span-8 space-y-10">
+          <div class="grid grid-cols-1 gap-8">
+            <div class="space-y-2">
+              <label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Shop Name</label>
+              <input class="w-full bg-white border-none rounded-lg p-4 text-lg font-body shadow-sm focus:ring-2 focus:ring-primary/20 ring-1 ring-outline-variant/30" type="text" value="Titanium Graphite Premium"/>
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Store Description</label>
+              <textarea class="w-full bg-white border-none rounded-lg p-4 text-lg font-body shadow-sm focus:ring-2 focus:ring-primary/20 ring-1 ring-outline-variant/30" rows="4">Precision engineered tools and high-end lifestyle accessories for the modern professional.</textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Support Email</label>
+                <input class="w-full bg-white border-none rounded-lg p-4 text-lg font-body shadow-sm focus:ring-2 focus:ring-primary/20 ring-1 ring-outline-variant/30" type="email" value="ops@titaniumgraphite.com"/>
+              </div>
+
+              <div class="space-y-2">
+                <label class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Business Phone</label>
+                <input class="w-full bg-white border-none rounded-lg p-4 text-lg font-body shadow-sm focus:ring-2 focus:ring-primary/20 ring-1 ring-outline-variant/30" type="text" value="+1 (555) 012-3456"/>
+              </div>
+            </div>
+
+            <div class="pt-8 flex justify-end gap-4 border-t border-outline-variant/20">
+              <button class="px-8 py-3 rounded-lg text-on-surface-variant font-bold hover:bg-surface-container-highest transition-all">Discard Changes</button>
+              <button class="px-10 py-3 bg-primary text-on-primary rounded-lg font-bold shadow-lg shadow-primary/20 hover:opacity-90 transition-all">Save Configurations</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="space-y-4">
+        <h3 class="text-lg font-bold text-primary">Thông báo</h3>
+        <app-notification-settings />
+      </section>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,61 @@
+@if (getCurrentSlide(); as slide) {
+  <section 
+    class="relative mt-20 h-[92vh] min-h-[720px] overflow-hidden bg-black"
+    (mouseenter)="stopAutoPlay()"
+    (mouseleave)="startAutoPlay()">
+    
+    <!-- Background Image with Overlay -->
+    <div class="absolute inset-0 transition-all duration-1000 ease-in-out">
+      <img 
+        [alt]="slide.title" 
+        [src]="slide.imageUrl"
+        class="h-full w-full object-fill object-center animate-fade-in" />
+    </div>
+
+    <!-- Content Container -->
+    <div class="relative mx-auto flex h-full max-w-[1440px] flex-col items-start justify-center px-6 text-white lg:px-12">
+      <span class="mb-4 text-xs font-bold tracking-[0.3em] uppercase opacity-80 animate-slide-up">
+        {{ slide.subtitle }}
+      </span>
+      
+      <!-- Sử dụng key để trigger animation mỗi khi đổi slide -->
+      <h1 class="mb-8 text-6xl leading-none font-medium tracking-tight md:text-8xl animate-slide-up" 
+          style="animation-delay: 100ms"
+          [innerHTML]="slide.title"></h1>
+      
+      <p class="mb-10 max-w-md text-lg leading-relaxed font-light text-gray-300 animate-slide-up"
+         style="animation-delay: 200ms">
+        {{ slide.description }}
+      </p>
+
+      <div class="flex items-center gap-12 animate-slide-up" style="animation-delay: 300ms">
+        <div>
+          <span class="mb-1 block text-[10px] tracking-widest text-gray-400 uppercase">Giá từ</span>
+          <span class="text-3xl font-light">{{ slide.startingPrice.toLocaleString('vi-VN') }}đ</span>
+        </div>
+        <a 
+          [routerLink]="slide.ctaRoute"
+          class="bg-white px-12 py-4 text-xs font-bold tracking-widest text-black uppercase transition-all duration-300 hover:bg-gray-200 hover:px-14">
+          {{ slide.ctaText }}
+        </a>
+      </div>
+
+      <!-- Slider Pagination -->
+      <div class="absolute bottom-12 left-12 flex gap-4">
+        @for (s of slides; track s.id; let i = $index) {
+          <button
+            (click)="onSlideClick(i)"
+            class="group relative h-8 w-16 cursor-pointer"
+            [attr.aria-label]="'Go to slide ' + (i + 1)">
+            <!-- Thanh nền -->
+            <div class="absolute top-1/2 h-[2px] w-full -translate-y-1/2 bg-white/20 transition-all"></div>
+            <!-- Thanh tiến trình (Active) -->
+            @if (i === currentSlideIndex()) {
+              <div class="absolute top-1/2 h-[2px] bg-white -translate-y-1/2 animate-progress"></div>
+            }
+          </button>
+        }
+      </div>
+    </div>
+  </section>
+}

@@ -1,0 +1,61 @@
+<div class="flex flex-col">
+  <div class="mb-6">
+    <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-2">{{ product().name }}</h1>
+    
+    @if (product().rating && product().reviewCount) {
+      <div class="flex items-center gap-4 mb-4">
+        <app-rating-display [rating]="product().rating!" [showValue]="false" />
+        <span class="text-sm font-semibold text-slate-600">
+          {{ product().rating }} ({{ product().reviewCount!.toLocaleString() }} reviews)
+        </span>
+      </div>
+    }
+    
+    <p class="text-3xl font-bold text-primary">${{ product().price.toFixed(2) }}</p>
+    @if (product().productKind === 'PARENT' && product().minSkuPrice != null && product().maxSkuPrice != null && product().minSkuPrice !== product().maxSkuPrice) {
+      <p class="text-sm font-medium text-slate-500 mt-1">
+        All variants: ${{ product().minSkuPrice!.toFixed(2) }} – ${{ product().maxSkuPrice!.toFixed(2) }}
+      </p>
+    }
+  </div>
+
+  <div class="space-y-6 flex-1">
+    <div class="prose prose-slate">
+      <p class="text-lg text-slate-600 leading-relaxed">
+        {{ product().description }}
+      </p>
+    </div>
+
+    @if ((product().configurations?.length ?? 0) > 0) {
+      <app-product-configuration 
+        [options]="product().configurations!"
+        (optionChange)="onConfigurationChange($event)" />
+    }
+
+    <div class="flex flex-col gap-3 py-6 border-y border-primary/10">
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-primary">local_shipping</span>
+        <span class="text-sm font-medium">Free express delivery by Tuesday, Oct 24</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-primary">verified_user</span>
+        <span class="text-sm font-medium">2-Year Limited Protection Warranty</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+    <button 
+      class="flex items-center justify-center gap-2 h-14 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
+      (click)="onBuyNowClick()">
+      <span class="material-symbols-outlined">bolt</span>
+      Buy Now
+    </button>
+    <button 
+      class="flex items-center justify-center gap-2 h-14 bg-white border-2 border-primary text-primary font-bold rounded-xl hover:bg-primary/5 transition-all"
+      (click)="onAddToCartClick()">
+      <span class="material-symbols-outlined">shopping_cart</span>
+      Add to Cart
+    </button>
+  </div>
+</div>

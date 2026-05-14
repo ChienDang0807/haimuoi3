@@ -1,0 +1,25 @@
+<app-header></app-header>
+
+<main>
+  <app-hero-section [slides]="heroSlides()"></app-hero-section>
+  
+  <app-category-section [categories]="categories()"></app-category-section>
+  
+  <app-new-arrivals
+    [products]="newProducts()"
+    [wishlistRecord]="wishlistRecord()"
+    [hasMoreFromServer]="hasMoreNewProducts()"
+    [isLoadingMore]="isLoadingMoreNewProducts()"
+    (loadMoreRequested)="onLoadMoreNewArrivals()"
+    (wishlistChanged)="onWishlistChanged($event)">
+  </app-new-arrivals>
+  
+  <app-policies-section 
+    [mainPolicies]="mainPolicies()"
+    [benefitPolicies]="benefitPolicies()">
+  </app-policies-section>
+  
+  <app-testimonials [testimonials]="testimonials()"></app-testimonials>
+</main>
+
+<app-footer></app-footer>

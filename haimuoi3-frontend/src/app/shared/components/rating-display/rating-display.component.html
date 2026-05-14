@@ -1,0 +1,19 @@
+<div class="flex items-center gap-1">
+  <div class="flex text-primary" [ngClass]="sizeClass">
+    @for (star of stars; track star) {
+      @if (getStarType(star) === 'filled') {
+        <span class="material-symbols-outlined filled">star</span>
+      } @else if (getStarType(star) === 'half') {
+        <span class="material-symbols-outlined filled">star_half</span>
+      } @else {
+        <span class="material-symbols-outlined">star</span>
+      }
+    }
+  </div>
+  
+  @if (showValue()) {
+    <span class="ml-1 font-semibold" [ngClass]="sizeClass">
+      {{ rating() }}
+    </span>
+  }
+</div>

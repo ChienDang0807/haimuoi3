@@ -1,0 +1,65 @@
+<section class="max-w-screen-2xl mx-auto px-8 py-24 bg-surface-container-low">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+    <div class="lg:col-span-4">
+      <span class="text-[10px] font-black uppercase tracking-widest text-primary block mb-2">Verified Feedback</span>
+      <h2 class="text-5xl font-black tracking-tighter uppercase text-on-surface mb-8">Client Reviews</h2>
+      
+      <div class="bg-surface p-8 rounded-xl shadow-lg border border-outline-variant/10">
+        <div class="flex items-center gap-4 mb-6">
+          <span class="text-6xl font-black text-primary">{{ stats().averageRating.toFixed(1) }}</span>
+          <div>
+            <app-rating-display [rating]="stats().averageRating" size="md" />
+            <span class="text-xs font-black uppercase tracking-widest text-secondary">
+              Based on {{ stats().totalReviews }} reviews
+            </span>
+          </div>
+        </div>
+        
+        <div class="space-y-3">
+          @for (item of ratingPercentages; track item.rating) {
+            <div class="flex items-center gap-4">
+              <span class="text-xs font-bold w-4">{{ item.rating }}</span>
+              <div class="flex-grow h-2 bg-surface-container rounded-full overflow-hidden">
+                <div class="h-full bg-primary" [style.width.%]="item.percentage"></div>
+              </div>
+              <span class="text-xs text-secondary w-8">{{ item.percentage }}%</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="lg:col-span-8 space-y-12">
+      @for (review of reviews(); track review.id) {
+        <div class="border-b border-outline-variant/30 pb-8">
+          <div class="flex justify-between items-start mb-4">
+            <div class="flex items-center gap-4">
+              @if (review.userAvatar) {
+                <div class="w-12 h-12 rounded-full bg-surface-container overflow-hidden">
+                  <img [alt]="review.userName" [src]="review.userAvatar" class="w-full h-full object-cover" />
+                </div>
+              } @else {
+                <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary font-bold">
+                  {{ review.userName.substring(0, 2).toUpperCase() }}
+                </div>
+              }
+              <div>
+                <h4 class="font-black uppercase text-xs tracking-widest text-on-surface">{{ review.userName }}</h4>
+                <p class="text-[10px] text-secondary">{{ review.date }}</p>
+              </div>
+            </div>
+            <app-rating-display [rating]="review.rating" size="sm" />
+          </div>
+          <p class="text-lg font-body text-on-surface-variant leading-relaxed italic">
+            "{{ review.comment }}"
+          </p>
+        </div>
+      }
+      
+      <button class="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-2 group">
+        View All Reviews
+        <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+      </button>
+    </div>
+  </div>
+</section>

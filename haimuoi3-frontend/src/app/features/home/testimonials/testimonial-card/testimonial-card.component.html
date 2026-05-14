@@ -1,0 +1,15 @@
+<div 
+  class="flex h-[450px] flex-col justify-between border border-white/10 p-12"
+  [class.bg-white/5]="testimonial.isHighlighted">
+  <div>
+    <span class="font-serif text-4xl text-white/20">"</span>
+    <p class="mt-4 text-xl leading-relaxed font-light italic">{{ testimonial.quote }}</p>
+  </div>
+  
+  <div class="mt-8">
+    <p class="text-xs font-bold tracking-widest uppercase">{{ testimonial.authorName }}</p>
+    <p class="mt-1 text-[10px] text-gray-500 uppercase">
+      {{ testimonial.authorTitle }}, {{ testimonial.authorLocation }}
+    </p>
+  </div>
+</div>

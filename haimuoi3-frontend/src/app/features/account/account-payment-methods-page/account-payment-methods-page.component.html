@@ -1,0 +1,96 @@
+<app-header />
+
+<div class="min-h-screen bg-background text-on-background">
+  <app-account-sidebar />
+
+  <main class="min-h-screen pt-20 md:pl-72">
+    <div class="mx-auto max-w-5xl px-8 py-12 lg:px-12 lg:py-16">
+      <header class="mb-12 lg:mb-16">
+        <span class="mb-2 block text-[10px] font-black uppercase tracking-widest text-primary">Account</span>
+        <h1 class="mb-4 text-4xl font-black uppercase leading-none tracking-tighter text-on-surface md:text-5xl lg:text-6xl xl:text-7xl">
+          Secure Payments
+        </h1>
+        <p class="max-w-xl text-base text-on-surface-variant md:text-lg">
+          Checkout uses Stripe. Card details are handled by Stripe — we do not store full card numbers on our servers.
+        </p>
+      </header>
+
+      <section class="mb-16 lg:mb-24">
+        <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <h2 class="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Stored methods</h2>
+          <button
+            type="button"
+            disabled
+            title="Only Stripe is supported at checkout. Additional methods are not available yet."
+            class="cursor-not-allowed border-b border-outline pb-1 text-xs font-bold text-secondary opacity-60">
+            ADD NEW METHOD
+          </button>
+        </div>
+
+        <div class="grid gap-4">
+          <div
+            class="group flex flex-col justify-between gap-6 rounded-lg bg-white p-6 shadow-lg shadow-primary/5 transition-all hover:bg-surface-container-low sm:flex-row sm:items-center sm:p-8">
+            <div class="flex flex-1 items-center gap-6 sm:gap-8">
+              <div
+                class="flex h-10 w-16 shrink-0 items-center justify-center rounded border border-outline-variant/20 bg-slate-100">
+                <span class="material-symbols-outlined text-[28px] text-primary">account_balance</span>
+              </div>
+              <div>
+                <h3 class="text-lg font-black tracking-tight text-on-surface">Stripe</h3>
+                <p class="text-sm text-on-surface-variant">
+                  Pay with card or wallet at checkout via Stripe Checkout / Elements.
+                </p>
+              </div>
+            </div>
+            <div class="flex shrink-0 items-center gap-4 sm:gap-6">
+              <span
+                class="rounded-full bg-primary/5 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-primary">
+                Default
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid grid-cols-1 items-start gap-10 md:grid-cols-2 md:gap-12">
+        <div>
+          <h2 class="mb-6 text-[10px] font-black uppercase tracking-[0.2em] text-primary md:mb-8">Default billing</h2>
+          <div class="rounded-lg bg-surface-container p-8 md:p-10">
+            <div class="mb-6 flex items-start justify-between">
+              <span class="material-symbols-outlined text-[40px] text-primary/40">home_pin</span>
+              <a
+                class="border-b border-on-background pb-1 text-xs font-bold hover:text-primary"
+                routerLink="/account/profile">
+                PROFILE
+              </a>
+            </div>
+            @if (authService.currentUser(); as user) {
+              <p class="mb-2 text-xl font-black tracking-tight text-on-surface">
+                {{ user.fullName || user.email || 'Account holder' }}
+              </p>
+              <p class="text-base leading-relaxed text-on-surface-variant">
+                Shipping and billing addresses are saved when you place an order or update your profile (when available).
+              </p>
+            } @else {
+              <p class="text-on-surface-variant">Sign in to see account details.</p>
+            }
+          </div>
+        </div>
+        <div class="md:pt-8 lg:pt-16">
+          <div class="rounded-lg border border-primary/10 bg-primary/5 p-8 md:p-10">
+            <div class="mb-4 flex items-center gap-4">
+              <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1">
+                verified_user
+              </span>
+              <h3 class="text-sm font-black uppercase tracking-wider text-on-surface">Secure infrastructure</h3>
+            </div>
+            <p class="text-sm leading-relaxed text-on-surface-variant">
+              Payments are processed with Stripe’s PCI-compliant flows. Sensitive card data stays with Stripe; we only
+              receive what is needed to complete your order.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,15 @@
+:host {
+  display: block;
+}
+
+.product-card {
+  &:hover {
+    .product-image {
+      transform: scale(1.05);
+    }
+  }
+}
+
+.product-image {
+  transition: transform 0.5s ease;
+}

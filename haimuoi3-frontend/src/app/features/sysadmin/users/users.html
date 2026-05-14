@@ -1,0 +1,298 @@
+<div class="bg-background text-on-background min-h-screen">
+<!-- SideNavBar (Authority: JSON) -->
+<aside class="fixed left-0 top-0 h-screen w-64 border-r border-slate-200/50 bg-slate-50 flex flex-col p-6 gap-y-4 z-50">
+<div class="mb-8">
+<h1 class="text-2xl font-black tracking-tighter text-slate-900">Titanium Graphite</h1>
+<p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Super Admin</p>
+</div>
+<nav class="flex flex-col gap-y-2 flex-grow">
+<!-- Tab: Tenants -->
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 transition-transform duration-200 hover:translate-x-1 font-inter text-sm font-medium uppercase tracking-widest" routerLink="/sysadmin/dashboard">
+<span class="material-symbols-outlined">business_center</span>
+<span>Tenants</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 transition-transform duration-200 hover:translate-x-1 font-inter text-sm font-medium uppercase tracking-widest" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span>Analytics</span>
+</a>
+<!-- Active Tab: Users -->
+<a class="flex items-center gap-3 px-4 py-3 bg-slate-900 text-white rounded-lg shadow-lg shadow-slate-900/20 font-inter text-sm font-medium uppercase tracking-widest active:scale-98" routerLink="/sysadmin/users">
+<span class="material-symbols-outlined">group</span>
+<span>Users</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 transition-transform duration-200 hover:translate-x-1 font-inter text-sm font-medium uppercase tracking-widest" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-y-2 pt-6 border-t border-slate-200">
+<button class="flex items-center gap-3 px-4 py-2 text-slate-500 hover:text-slate-900 transition-transform duration-200 hover:translate-x-1 font-inter text-xs font-black uppercase tracking-widest">
+<span class="material-symbols-outlined text-sm">support_agent</span>
+<span>Support</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-2 text-slate-500 hover:text-slate-900 transition-transform duration-200 hover:translate-x-1 font-inter text-xs font-black uppercase tracking-widest">
+<span class="material-symbols-outlined text-sm">logout</span>
+<span>Logout</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pl-64 min-h-screen">
+<!-- TopNavBar (Authority: JSON) -->
+<header class="bg-white/80 backdrop-blur-md sticky top-0 z-40 h-16 w-full flex justify-between items-center px-8 shadow-sm">
+<div class="flex items-center gap-6">
+<h2 class="text-xl font-black tracking-tighter text-slate-800">Titanium Admin</h2>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="bg-surface-container border-none rounded-lg pl-10 pr-4 py-1.5 text-sm w-64 focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Global Search..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-slate-200 overflow-hidden ml-2 border border-slate-300">
+<img alt="Super Admin Profile" class="w-full h-full object-cover" data-alt="close-up portrait of a professional administrator in a minimalist office setting, soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfXUOhoDFTZLi7BYNCbxWhcHXb47ARMswZh4e4JilWAMcwrHVluUwkLLjsQXzxkMwmzmjHJ-ALAgngQ7EScJu2X-AyUKyPUT7_y5zXzqNW0Pwguy4Hlui-Qd8ciOlVtjWOEMTVaDyG5bupZ55vcdf0n9XIATGEdc7-H_GbNzhHpEBG65RGy2u_z2804ieWHbQtimLtn5ILlphgqd58zI_GaoJaleWCpNwVMBBVvZ5knJ82UcJLR5B-AjHz9Jrf3AmjnFkamOeocnk"/>
+</div>
+</div>
+</header>
+<div class="p-12 space-y-12">
+<!-- Hero Section / Header -->
+<section class="flex justify-between items-end">
+<div class="space-y-2">
+<h1 class="text-[72px] font-black tracking-tighter leading-none text-on-surface">Users &amp; Permissions</h1>
+<p class="text-lg text-slate-500 font-medium max-w-2xl tracking-tight">Manage your administrative ecosystem and refine role-based access control with surgical precision.</p>
+</div>
+<button class="bg-primary text-white px-8 py-4 rounded-lg font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined">person_add</span>
+                    Invite User
+                </button>
+</section>
+<!-- Stats/Bento Grid Overview -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="bg-white p-8 rounded-xl shadow-sm space-y-4 border-l-4 border-primary">
+<p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Total Admins</p>
+<p class="text-4xl font-black tracking-tighter">42</p>
+</div>
+<div class="bg-white p-8 rounded-xl shadow-sm space-y-4">
+<p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Active Roles</p>
+<p class="text-4xl font-black tracking-tighter text-secondary">06</p>
+</div>
+<div class="bg-white p-8 rounded-xl shadow-sm space-y-4">
+<p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Pending Invites</p>
+<p class="text-4xl font-black tracking-tighter text-tertiary">08</p>
+</div>
+<div class="bg-slate-900 p-8 rounded-xl shadow-xl space-y-4 text-white">
+<p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Security Audit</p>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-emerald-400">verified_user</span>
+<p class="text-xl font-bold tracking-tight">Optimal</p>
+</div>
+</div>
+</div>
+<!-- Main Management Section: Bento Layout -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Admin Table (List View) -->
+<div class="col-span-12 lg:col-span-8 bg-white rounded-xl shadow-sm overflow-hidden">
+<div class="px-8 py-6 flex justify-between items-center bg-slate-50/50">
+<h3 class="text-sm font-black uppercase tracking-widest text-slate-800">Administrative Directory</h3>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-slate-200 rounded transition-colors"><span class="material-symbols-outlined text-lg">filter_list</span></button>
+<button class="p-2 hover:bg-slate-200 rounded transition-colors"><span class="material-symbols-outlined text-lg">file_download</span></button>
+</div>
+</div>
+<table class="w-full text-left">
+<thead>
+<tr class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 border-b border-slate-100">
+<th class="px-8 py-4">Identity</th>
+<th class="px-4 py-4">Role</th>
+<th class="px-4 py-4">Status</th>
+<th class="px-4 py-4">Last Login</th>
+<th class="px-8 py-4 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<!-- User Row 1 -->
+<tr class="hover:bg-slate-50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center font-black text-slate-500">EW</div>
+<div>
+<p class="font-bold text-slate-900 tracking-tight">Elias Weaver</p>
+<p class="text-xs text-slate-400 tracking-tight">elias@titanium.admin</p>
+</div>
+</div>
+</td>
+<td class="px-4 py-6">
+<span class="px-3 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-full">Super Admin</span>
+</td>
+<td class="px-4 py-6">
+<div class="flex items-center gap-2">
+<span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+<span class="text-sm font-medium text-slate-600">Active</span>
+</div>
+</td>
+<td class="px-4 py-6">
+<p class="text-sm text-slate-400 tracking-tight">2 mins ago</p>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="text-slate-300 hover:text-slate-900 transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- User Row 2 -->
+<tr class="hover:bg-slate-50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center font-black text-slate-500">JL</div>
+<div>
+<p class="font-bold text-slate-900 tracking-tight">Julia Lund</p>
+<p class="text-xs text-slate-400 tracking-tight">j.lund@titanium.support</p>
+</div>
+</div>
+</td>
+<td class="px-4 py-6">
+<span class="px-3 py-1 bg-secondary/10 text-secondary text-[10px] font-black uppercase tracking-widest rounded-full">Support</span>
+</td>
+<td class="px-4 py-6">
+<div class="flex items-center gap-2">
+<span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+<span class="text-sm font-medium text-slate-600">Active</span>
+</div>
+</td>
+<td class="px-4 py-6">
+<p class="text-sm text-slate-400 tracking-tight">Yesterday, 4:12 PM</p>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="text-slate-300 hover:text-slate-900 transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- User Row 3 -->
+<tr class="hover:bg-slate-50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center font-black text-slate-500">KM</div>
+<div>
+<p class="font-bold text-slate-900 tracking-tight">Klaus Meyer</p>
+<p class="text-xs text-slate-400 tracking-tight">kmeyer@titanium.finance</p>
+</div>
+</div>
+</td>
+<td class="px-4 py-6">
+<span class="px-3 py-1 bg-tertiary/10 text-tertiary text-[10px] font-black uppercase tracking-widest rounded-full">Billing</span>
+</td>
+<td class="px-4 py-6">
+<div class="flex items-center gap-2">
+<span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
+<span class="text-sm font-medium text-slate-600">Away</span>
+</div>
+</td>
+<td class="px-4 py-6">
+<p class="text-sm text-slate-400 tracking-tight">Mar 12, 09:00 AM</p>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="text-slate-300 hover:text-slate-900 transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- RBAC Control Panel (Right Column) -->
+<div class="col-span-12 lg:col-span-4 space-y-8">
+<div class="bg-slate-900 text-white rounded-xl p-8 shadow-2xl relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl rounded-full translate-x-10 -translate-y-10"></div>
+<div class="relative z-10 space-y-6">
+<h3 class="text-sm font-black uppercase tracking-[0.25em] text-slate-400">RBAC Settings</h3>
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<span class="font-medium tracking-tight">Multi-Factor Auth</span>
+<div class="w-10 h-6 bg-primary rounded-full relative flex items-center px-1">
+<div class="w-4 h-4 bg-white rounded-full translate-x-4"></div>
+</div>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-medium tracking-tight">IP Whitelisting</span>
+<div class="w-10 h-6 bg-slate-700 rounded-full relative flex items-center px-1">
+<div class="w-4 h-4 bg-white rounded-full"></div>
+</div>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-medium tracking-tight">Session Timeout</span>
+<span class="text-slate-400 text-sm font-bold">30m</span>
+</div>
+</div>
+<button class="w-full py-3 border border-slate-700 rounded-lg text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-colors">Configure Master Key</button>
+</div>
+</div>
+<div class="bg-white rounded-xl p-8 shadow-sm space-y-6">
+<h3 class="text-sm font-black uppercase tracking-widest text-slate-800">Role Permissions</h3>
+<div class="space-y-6">
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<span class="text-xs font-black uppercase text-slate-500">Support Lead</span>
+<span class="material-symbols-outlined text-sm text-slate-400">info</span>
+</div>
+<div class="flex gap-2 flex-wrap">
+<span class="px-2 py-1 bg-surface-container text-[9px] font-black tracking-widest rounded">READ_ALL</span>
+<span class="px-2 py-1 bg-surface-container text-[9px] font-black tracking-widest rounded">WRITE_TICKETS</span>
+<span class="px-2 py-1 bg-surface-container text-[9px] font-black tracking-widest rounded">VIEW_PII</span>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<span class="text-xs font-black uppercase text-slate-500">Billing Analyst</span>
+<span class="material-symbols-outlined text-sm text-slate-400">info</span>
+</div>
+<div class="flex gap-2 flex-wrap">
+<span class="px-2 py-1 bg-surface-container text-[9px] font-black tracking-widest rounded">VIEW_REVENUE</span>
+<span class="px-2 py-1 bg-surface-container text-[9px] font-black tracking-widest rounded">PROCESS_REFUND</span>
+</div>
+</div>
+</div>
+<button class="w-full py-4 bg-slate-50 text-slate-900 rounded-lg text-xs font-black uppercase tracking-widest hover:bg-slate-100 transition-colors">Edit Policy Framework</button>
+</div>
+</div>
+</div>
+<!-- Audit Trail / Footer Area -->
+<section class="space-y-6">
+<h3 class="text-sm font-black uppercase tracking-widest text-slate-500">Security Audit Logs</h3>
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+<div class="divide-y divide-slate-50">
+<div class="px-8 py-4 flex justify-between items-center text-sm">
+<div class="flex gap-4 items-center">
+<span class="material-symbols-outlined text-amber-500 text-lg">shield</span>
+<p class="text-slate-600"><span class="font-bold text-slate-900">Elias Weaver</span> updated permissions for <span class="font-bold text-slate-900">Julia Lund</span></p>
+</div>
+<span class="text-xs text-slate-400 font-medium">14:02 PM</span>
+</div>
+<div class="px-8 py-4 flex justify-between items-center text-sm">
+<div class="flex gap-4 items-center">
+<span class="material-symbols-outlined text-emerald-500 text-lg">login</span>
+<p class="text-slate-600"><span class="font-bold text-slate-900">System</span> successful login from new IP <span class="font-bold text-slate-900">192.168.1.1</span></p>
+</div>
+<span class="text-xs text-slate-400 font-medium">09:12 AM</span>
+</div>
+<div class="px-8 py-4 flex justify-between items-center text-sm">
+<div class="flex gap-4 items-center">
+<span class="material-symbols-outlined text-error text-lg">gpp_maybe</span>
+<p class="text-slate-600"><span class="font-bold text-slate-900">Unauthorized</span> access attempt blocked: <span class="font-bold text-slate-900">API_GATEWAY_3</span></p>
+</div>
+<span class="text-xs text-slate-400 font-medium">Yesterday, 11:45 PM</span>
+</div>
+</div>
+<div class="bg-slate-50/50 px-8 py-4 text-center">
+<button class="text-xs font-black uppercase tracking-widest text-primary hover:underline">View Full Audit History</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>

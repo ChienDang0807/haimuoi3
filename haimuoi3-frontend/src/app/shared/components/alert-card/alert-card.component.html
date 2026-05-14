@@ -1,0 +1,23 @@
+<div [class]="cardClasses">
+  <div>
+    <span class="material-symbols-outlined mb-4" [class]="iconClasses" style="font-variation-settings: 'FILL' 1;">
+      {{ config().icon }}
+    </span>
+    <h3 class="text-xl font-black tracking-tight" [class]="textClasses">
+      {{ config().title }}
+    </h3>
+    <p class="mt-2 text-sm" [class]="config().type === 'primary' ? 'text-on-primary/70' : 'text-secondary'">
+      {{ config().description }}
+    </p>
+  </div>
+
+  @if (config().actionText && config().actionLink) {
+    <a 
+      [href]="config().actionLink"
+      class="text-[10px] font-black uppercase tracking-widest mt-6 flex items-center gap-2"
+      [class]="config().type === 'error' ? 'text-error' : config().type === 'primary' ? 'text-on-primary' : 'text-primary'">
+      {{ config().actionText }}
+      <span class="material-symbols-outlined text-xs">arrow_forward</span>
+    </a>
+  }
+</div>
