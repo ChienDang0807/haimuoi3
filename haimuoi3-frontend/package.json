@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "build:railway": "node scripts/set-api-url.mjs && ng build --configuration production",
+    "start:prod": "node scripts/railway-serve.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:haimuoi3-frontend": "node dist/haimuoi3-frontend/server/server.mjs"

@@ -5,8 +5,8 @@
 buildCommand = "npm ci && npm run build:railway"
 
 [deploy]
-# Must bind 0.0.0.0 — serve defaults to localhost only → Railway 502
-startCommand = "npx --yes serve@14 dist/haimuoi3-frontend/browser -s -l tcp://0.0.0.0:$PORT"
+# Express listens on process.env.PORT + 0.0.0.0 (Railway edge). In Dashboard → Networking, target port must match PORT.
+startCommand = "npm run start:prod"
 healthcheckPath = "/"
 healthcheckTimeout = 120
 restartPolicyType = "ON_FAILURE"
