@@ -38,6 +38,32 @@ Trên Backend, set **một** trong các biến:
 - `MONGO_URL` — alias
 - Hoặc `MONGODB_HOST` + `MONGODB_PORT` + `MONGODB_DATABASE`
 
+### Tên database trong Mongo URI (bắt buộc)
+
+Spring cần **tên database** — gắn **trên cùng chuỗi URI**, sau host/port, **trước** `?`:
+
+```text
+mongodb://user:pass@host:27017/haimuoi3-backend
+mongodb+srv://user:pass@cluster.mongodb.net/haimuoi3-backend?retryWrites=true
+```
+
+**Sai** (Railway hay cấp thiếu → `Database name must not be empty`):
+
+```text
+mongodb://user:pass@host:27017
+mongodb+srv://user:pass@cluster.mongodb.net/?retryWrites=true
+```
+
+**Cách sửa nhanh:** copy `MONGODB_URI` từ Railway, thêm `/haimuoi3-backend` (hoặc tên DB bạn dùng) ngay trước dấu `?` nếu có.
+
+**Hoặc** giữ URI như Railway cấp và thêm biến:
+
+```text
+MONGODB_DATABASE=haimuoi3-backend
+```
+
+(app đọc `spring.data.mongodb.database` khi URI không có path — cần bản config mới nhất.)
+
 ---
 
 ## 3. Backend — biến bắt buộc
@@ -45,7 +71,7 @@ Trên Backend, set **một** trong các biến:
 | Biến | Ví dụ / ghi chú |
 |------|------------------|
 | `SPRING_PROFILES_ACTIVE` | `prod` |
-| `JWT_SECRET` | Chuỗi random ≥ 32 ký tự |
+| `JWT_SECRET` | **Bắt buộc** — chuỗi random ≥ 32 ký tự (thiếu → lỗi `Could not resolve placeholder 'JWT_SECRET'`) |
 | `STRIPE_SECRET_KEY` | `sk_test_...` hoặc live |
 | `STRIPE_WEBHOOK_SECRET` | Stripe webhook → `https://<backend>/api/v1/payments/webhook` |
 | `APP_BASE_URL` | URL public **frontend** (vd. `https://xxx.up.railway.app`) |
@@ -55,9 +81,11 @@ Trên Backend, set **một** trong các biến:
 
 `PORT` — Railway tự inject, không cần set.
 
-**Health check:** `/actuator/health`
+**Health check (Railway):** `/actuator/health/liveness` — chỉ cần app đã start (port `PORT`).
 
-Sau deploy, mở: `https://<backend-domain>/actuator/health` → `UP`.
+Kiểm tra DB đầy đủ: `https://<backend-domain>/actuator/health` → `UP` (nếu Postgres + Mongo OK).
+
+`PORT` — Railway inject (thường `8080`); log `Tomcat started on port 8080` là đúng.
 
 ---
 

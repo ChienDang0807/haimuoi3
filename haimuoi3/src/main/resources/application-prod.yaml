@@ -21,9 +21,18 @@ spring:
 
   data:
     mongodb:
+      # URI must include db path, e.g. .../haimuoi3-backend — or set MONGODB_DATABASE when URI has no path
       uri: ${MONGODB_URI:${MONGO_URL:mongodb://${MONGODB_HOST:localhost}:${MONGODB_PORT:27017}/${MONGODB_DATABASE:haimuoi3-backend}}}
+      database: ${MONGODB_DATABASE:haimuoi3-backend}
 
   flyway:
     enabled: true
     baseline-on-migrate: true
     locations: classpath:db/migration
+
+jwt:
+  secret: ${JWT_SECRET}
+
+stripe:
+  secret-key: ${STRIPE_SECRET_KEY}
+  webhook-secret: ${STRIPE_WEBHOOK_SECRET}
