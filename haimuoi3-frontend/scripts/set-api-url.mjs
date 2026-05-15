@@ -14,6 +14,9 @@ if (!raw) {
 }
 
 let apiUrl = raw.replace(/\/+$/, '');
+if (!/^https?:\/\//i.test(apiUrl)) {
+  apiUrl = `https://${apiUrl}`;
+}
 if (!apiUrl.endsWith('/api')) {
   apiUrl += '/api';
 }
