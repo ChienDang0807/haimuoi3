@@ -1,0 +1,9 @@
+# Railway — Frontend (root directory = haimuoi3-frontend)
+# Set variable API_URL = https://<your-backend>.up.railway.app/api before deploy
+
+[build]
+buildCommand = "npm ci && npm run build:railway"
+
+[deploy]
+startCommand = "npx --yes serve@14 dist/haimuoi3-frontend/browser -l $PORT"
+restartPolicyType = "ON_FAILURE"

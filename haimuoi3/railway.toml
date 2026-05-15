@@ -1,0 +1,11 @@
+# Railway — Backend (root directory = haimuoi3)
+# Docs: haimuoi3/RAILWAY.md
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+healthcheckPath = "/actuator/health"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
