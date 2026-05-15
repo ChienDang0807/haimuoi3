@@ -24,6 +24,12 @@ public interface OrderService {
 
     Page<OrderResponse> getOrdersByShopId(Long shopId, Pageable pageable);
 
+    OrderResponse getOrderByIdAndShopId(Long orderId, Long shopId);
+
+    Page<OrderResponse> getOrdersForShopOwner(Long ownerUserId, Pageable pageable);
+
+    OrderResponse getOrderForShopOwner(Long ownerUserId, Long orderId);
+
     List<OrderResponse> getOrdersByCustomerId(Long customerId);
 
     Page<OrderResponse> getOrdersByCustomerId(Long customerId, Pageable pageable);

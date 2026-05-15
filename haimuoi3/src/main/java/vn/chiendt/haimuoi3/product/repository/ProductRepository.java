@@ -19,4 +19,6 @@ public interface ProductRepository extends MongoRepository<ProductEntity, String
     boolean existsByShopIdAndSkuAndIdNot(String shopId, String sku, String id);
 
     List<ProductEntity> findByIdIn(List<String> ids);
+
+    boolean existsByShopCategoryId(String shopCategoryId);
 }

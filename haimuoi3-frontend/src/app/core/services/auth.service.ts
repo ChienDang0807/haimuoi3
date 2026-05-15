@@ -21,7 +21,7 @@ export class AuthService {
   constructor() {
     // 3.3 — Boot hydrate: if SHOP_OWNER loaded from storage without shopId, hydrate now
     const user = this._currentUser();
-    if (user && user.role === 'SHOP_OWNER' && !(user.shopId && user.shopId > 0)) {
+    if (user && user.role === 'SHOP_OWNER' && (!(user.shopId && user.shopId > 0) || !user.shopName)) {
       this.hydrateShopId(user);
     }
   }
@@ -115,8 +115,14 @@ export class AuthService {
       .subscribe({
         next: res => {
           const shopId = res?.result?.id;
+          const shopName = typeof res?.result?.['shopName'] === 'string' ? res.result['shopName'] : undefined;
           if (shopId && typeof shopId === 'number') {
             user.shopId = shopId;
+          }
+          if (shopName) {
+            user.shopName = shopName;
+          }
+          if (user.shopId || user.shopName) {
             if (isPlatformBrowser(this.platformId)) {
               localStorage.setItem(AuthStorageKeys.CURRENT_USER, JSON.stringify(user));
             }

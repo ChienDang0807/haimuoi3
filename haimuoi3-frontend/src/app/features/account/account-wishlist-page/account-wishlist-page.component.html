@@ -3,17 +3,16 @@
 <div class="min-h-screen bg-background text-on-background">
   <app-account-sidebar />
 
-  <main class="min-h-screen pt-20 md:pl-72">
-    <div class="mx-auto max-w-6xl space-y-12 p-8 lg:p-12">
-      <header class="space-y-4">
-        <span class="text-[10px] font-black uppercase tracking-widest text-primary">Account</span>
-        <h1 class="text-4xl font-black uppercase tracking-tighter text-on-surface md:text-5xl lg:text-6xl">
-          Wishlist
-        </h1>
-        <p class="max-w-2xl text-lg font-medium leading-relaxed text-secondary">
-          Curated items you saved. Add to cart when a single variant is available, or open the product to choose options.
-        </p>
-      </header>
+  <main class="min-h-screen pt-20 md:pl-72 p-4 md:p-8">
+    <div class="rounded-[32px] bg-white p-6 shadow-sm border border-gray-100 md:p-10 lg:p-12">
+      <div class="mx-auto max-w-6xl space-y-12">
+        <div class="mb-8 flex flex-col">
+          <span class="mb-2 text-[10px] font-black uppercase tracking-widest text-primary">Account</span>
+          <h2 class="text-5xl font-black tracking-tighter text-on-surface">Wishlist</h2>
+          <p class="mt-4 max-w-2xl text-lg font-medium leading-relaxed text-secondary">
+            Curated items you saved. Add to cart when a single variant is available, or open the product to choose options.
+          </p>
+        </div>
 
       @if (isShopOwner()) {
         <div class="rounded-xl border border-outline-variant bg-surface-container-low p-8">
@@ -44,7 +43,7 @@
         <div class="grid grid-cols-1 gap-10 md:grid-cols-2 xl:grid-cols-3">
           @for (item of items(); track item.id) {
             <article
-              class="group flex flex-col overflow-hidden rounded-xl bg-surface-container-low shadow-sm transition hover:-translate-y-1"
+              class="group flex flex-col overflow-hidden rounded-xl bg-slate-50 border border-gray-100 shadow-sm transition hover:-translate-y-1"
               [class.opacity-60]="isUnavailable(item)"
               [class.grayscale]="item.availability === 'DISCONTINUED'">
               <button type="button" class="relative block w-full text-left" (click)="goToProduct(item.productId)">
@@ -132,6 +131,7 @@
           }
         }
       }
+      </div>
     </div>
   </main>
 </div>

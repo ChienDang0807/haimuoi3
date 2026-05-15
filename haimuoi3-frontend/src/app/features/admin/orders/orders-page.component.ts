@@ -1,22 +1,23 @@
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AdminSidebarComponent } from '../../../shared/layout/admin-sidebar/admin-sidebar.component';
 import { AdminHeaderComponent } from '../../../shared/layout/admin-header/admin-header.component';
-import { ShopOrderService } from '../../../core/services/shop-order.service';
 import { OrderDetail, PageResponse } from '../../../shared/interfaces';
 import { orderStatusBadgeClass, orderStatusLabel } from '../../account/account-order-status.util';
+import { ShopOwnerApiService } from '../../../core/services/shop-owner-api.service';
 
 @Component({
   selector: 'app-orders-page',
   standalone: true,
-  imports: [CommonModule, AdminSidebarComponent, AdminHeaderComponent],
+  imports: [CommonModule, RouterModule, AdminSidebarComponent, AdminHeaderComponent],
   templateUrl: './orders-page.component.html',
   styleUrl: './orders-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrdersPageComponent {
-  private readonly shopOrderService = inject(ShopOrderService);
+  private readonly shopOwnerApi = inject(ShopOwnerApiService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly pageSize = 20;
@@ -26,16 +27,16 @@ export class OrdersPageComponent {
 
   readonly orders = computed(() => this.orderPage()?.content ?? []);
 
-  readonly totalLabel = computed(() => {
+    readonly totalLabel = computed(() => {
     const p = this.orderPage();
-    if (!p) return 'Loading…';
-    return `${p.totalElements} order${p.totalElements === 1 ? '' : 's'} for your shop`;
+    if (!p) return 'Đang tải…';
+    return `${p.totalElements} đơn hàng cho cửa hàng của bạn`;
   });
 
   readonly paginationLabel = computed(() => {
     const p = this.orderPage();
     if (!p || p.totalPages <= 1) return '';
-    return `Page ${p.number + 1} of ${p.totalPages}`;
+    return `Trang ${p.number + 1} trên ${p.totalPages}`;
   });
 
   constructor() {
@@ -45,7 +46,7 @@ export class OrdersPageComponent {
   loadPage(pageIndex: number): void {
     this.loading.set(true);
     this.error.set(false);
-    this.shopOrderService
+    this.shopOwnerApi
       .listMyShopOrders(pageIndex, this.pageSize)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({

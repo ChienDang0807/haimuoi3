@@ -11,6 +11,7 @@ import vn.chiendt.haimuoi3.inventory.service.InventoryService;
 import vn.chiendt.haimuoi3.media.dto.response.MediaUploadResponse;
 import vn.chiendt.haimuoi3.media.model.MediaTargetType;
 import vn.chiendt.haimuoi3.media.service.MediaService;
+import vn.chiendt.haimuoi3.common.constants.Constants;
 import vn.chiendt.haimuoi3.common.exception.ResourceNotFoundException;
 import vn.chiendt.haimuoi3.common.utils.ShopIdUtils;
 import vn.chiendt.haimuoi3.product.dto.request.CreateProductRequest;
@@ -31,6 +32,7 @@ import vn.chiendt.haimuoi3.product.validator.ProductParentSkuValidator;
 import vn.chiendt.haimuoi3.product.repository.GlobalCategoryRepository;
 import vn.chiendt.haimuoi3.shop.model.ShopCategoryEntity;
 import vn.chiendt.haimuoi3.shop.repository.ShopCategoryRepository;
+import vn.chiendt.haimuoi3.shop.service.ShopService;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -50,6 +52,7 @@ public class ProductServiceImpl implements ProductService {
     private final InventoryService inventoryService;
     private final ShopCategoryRepository shopCategoryRepository;
     private final GlobalCategoryRepository globalCategoryRepository;
+    private final ShopService shopService;
 
     @Override
     public Page<GlobalProductResponse> findAllGlobalProduct(
@@ -229,6 +232,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
+    public ShopProductResponse toggleProductStatus(String id) {
+        ProductEntity existing = findProductEntityById(id);
+        String currentStatus = existing.getStatus();
+        if (currentStatus == null || "ACTIVE".equalsIgnoreCase(currentStatus.trim())) {
+            existing.setStatus("INACTIVE");
+        } else {
+            existing.setStatus("ACTIVE");
+        }
+        ProductEntity updated = productRepository.save(existing);
+        return productMapper.toShopResponse(updated);
+    }
+
+    @Override
     public ShopProductResponse uploadProductImage(String id, MultipartFile file) {
         ProductEntity existing = findProductEntityById(id);
         MediaUploadResponse uploaded = mediaService.uploadImage(file, MediaTargetType.PRODUCT);
@@ -260,6 +277,65 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<ShopProductResponse> findAllByShopId(String shopId, Pageable pageable) {
         return productRepository.findCatalogByShopId(shopId, pageable).map(productMapper::toShopResponse);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ShopProductResponse> findAllForShopOwner(Long ownerUserId, Pageable pageable) {
+        Long shopId = requireOwnerShopId(ownerUserId);
+        return findAllByShopId(String.valueOf(shopId), pageable);
+    }
+
+    @Override
+    public ShopProductResponse createForShopOwner(Long ownerUserId, CreateProductRequest request) {
+        Long shopId = requireOwnerShopId(ownerUserId);
+        if (request == null) {
+            throw new IllegalArgumentException("Create product request must not be null");
+        }
+        request.setShopId(String.valueOf(shopId));
+        return save(request);
+    }
+
+    @Override
+    @Transactional
+    public ShopProductResponse updateForShopOwner(Long ownerUserId, String productId, UpdateProductRequest request) {
+        assertProductOwnedByShopOwner(ownerUserId, productId);
+        return update(productId, request);
+    }
+
+    @Override
+    @Transactional
+    public ShopProductResponse toggleStatusForShopOwner(Long ownerUserId, String productId) {
+        assertProductOwnedByShopOwner(ownerUserId, productId);
+        return toggleProductStatus(productId);
+    }
+
+    @Override
+    public ShopProductResponse uploadProductImageForShopOwner(Long ownerUserId, String productId, MultipartFile file) {
+        assertProductOwnedByShopOwner(ownerUserId, productId);
+        return uploadProductImage(productId, file);
+    }
+
+    @Override
+    public ShopProductResponse uploadProductImagesForShopOwner(Long ownerUserId, String productId, MultipartFile[] files) {
+        assertProductOwnedByShopOwner(ownerUserId, productId);
+        return uploadProductImages(productId, files);
+    }
+
+    private Long requireOwnerShopId(Long ownerUserId) {
+        if (ownerUserId == null || ownerUserId <= 0) {
+            throw new IllegalArgumentException("owner context is invalid");
+        }
+        return shopService.getShopByOwnerId(ownerUserId).getId();
+    }
+
+    private void assertProductOwnedByShopOwner(Long ownerUserId, String productId) {
+        Long shopId = requireOwnerShopId(ownerUserId);
+        ProductEntity product = findProductEntityById(productId);
+        Long productShopId = ShopIdUtils.parseLongOrNull(product.getShopId());
+        if (productShopId == null || !productShopId.equals(shopId)) {
+            throw new IllegalArgumentException(Constants.Inventory.PRODUCT_SHOP_MISMATCH);
+        }
     }
 
     private ProductEntity findProductEntityById(String id) {

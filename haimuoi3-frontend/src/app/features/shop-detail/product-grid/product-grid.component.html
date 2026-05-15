@@ -40,7 +40,7 @@
     @for (product of filteredProducts; track product.id) {
       <app-product-card
         [product]="product"
-        [inWishlist]="wishlistRecord()[product.id] ?? false"
+        [inWishlist]="wishlistRecord()[product.id] "
         (wishlistChanged)="wishlistChanged.emit($event)" />
     }
   </div>

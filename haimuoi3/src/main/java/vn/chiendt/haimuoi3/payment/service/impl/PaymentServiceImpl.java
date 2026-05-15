@@ -7,6 +7,8 @@ import com.stripe.model.Event;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
 import com.stripe.param.checkout.SessionCreateParams;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +32,8 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Value("${stripe.secret-key}")
     private String stripeSecretKey;
@@ -76,6 +80,7 @@ public class PaymentServiceImpl implements PaymentService {
             order.setUpdatedAt(LocalDateTime.now());
             orderRepository.save(order);
 
+            log.info("Stripe checkout session created for orderId={}, sessionId={}", orderId, session.getId());
             return new CheckoutSessionResponse(session.getUrl());
         } catch (StripeException e) {
             log.error("Failed to create Stripe session for order {}: {}", orderId, e.getMessage());
@@ -94,6 +99,8 @@ public class PaymentServiceImpl implements PaymentService {
             throw new IllegalArgumentException("Invalid webhook signature");
         }
 
+        log.info("Stripe webhook received: eventId={}, type={}", event.getId(), event.getType());
+
         switch (event.getType()) {
             case "checkout.session.completed" -> handleSessionCompleted(event);
             case "checkout.session.expired" -> handleSessionExpired(event);
@@ -102,33 +109,101 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private void handleSessionCompleted(Event event) {
-        event.getDataObjectDeserializer().getObject().ifPresent(obj -> {
-            Session session = (Session) obj;
-            String orderId = session.getMetadata().get("orderId");
-            if (orderId != null) {
-                updateOrderStatus(Long.parseLong(orderId), session.getId(), OrderStatus.PAID);
-            }
-        });
+        resolveCheckoutSession(event).ifPresentOrElse(
+                session -> {
+                    String orderId = session.getMetadata() != null ? session.getMetadata().get("orderId") : null;
+                    if (orderId == null || orderId.isBlank()) {
+                        log.warn(
+                                "checkout.session.completed missing orderId metadata: eventId={}, sessionId={}",
+                                event.getId(),
+                                session.getId()
+                        );
+                        return;
+                    }
+                    log.info(
+                            "checkout.session.completed resolved: eventId={}, sessionId={}, orderId={}",
+                            event.getId(),
+                            session.getId(),
+                            orderId
+                    );
+                    updateOrderStatus(Long.parseLong(orderId), session.getId(), OrderStatus.PAID);
+                },
+                () -> log.warn("checkout.session.completed could not be resolved: eventId={}", event.getId())
+        );
     }
 
     private void handleSessionExpired(Event event) {
-        event.getDataObjectDeserializer().getObject().ifPresent(obj -> {
-            Session session = (Session) obj;
-            String orderId = session.getMetadata().get("orderId");
-            if (orderId != null) {
-                updateOrderStatus(Long.parseLong(orderId), session.getId(), OrderStatus.PAYMENT_FAILED);
-            }
-        });
+        resolveCheckoutSession(event).ifPresentOrElse(
+                session -> {
+                    String orderId = session.getMetadata() != null ? session.getMetadata().get("orderId") : null;
+                    if (orderId == null || orderId.isBlank()) {
+                        log.warn(
+                                "checkout.session.expired missing orderId metadata: eventId={}, sessionId={}",
+                                event.getId(),
+                                session.getId()
+                        );
+                        return;
+                    }
+                    log.info(
+                            "checkout.session.expired resolved: eventId={}, sessionId={}, orderId={}",
+                            event.getId(),
+                            session.getId(),
+                            orderId
+                    );
+                    updateOrderStatus(Long.parseLong(orderId), session.getId(), OrderStatus.PAYMENT_FAILED);
+                },
+                () -> log.warn("checkout.session.expired could not be resolved: eventId={}", event.getId())
+        );
+    }
+
+    private Optional<Session> resolveCheckoutSession(Event event) {
+        var deserializer = event.getDataObjectDeserializer();
+        if (deserializer.getObject().isPresent()) {
+            return Optional.of((Session) deserializer.getObject().get());
+        }
+
+        String sessionId = extractCheckoutSessionId(deserializer.getRawJson());
+        if (sessionId == null) {
+            return Optional.empty();
+        }
+
+        try {
+            Session session = Session.retrieve(sessionId);
+            log.info(
+                    "Retrieved checkout session from Stripe API: eventId={}, sessionId={}",
+                    event.getId(),
+                    session.getId()
+            );
+            return Optional.of(session);
+        } catch (StripeException ex) {
+            log.error("Failed to retrieve checkout session for event {}: {}", event.getId(), ex.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    private String extractCheckoutSessionId(String rawJson) {
+        if (rawJson == null || rawJson.isBlank()) {
+            return null;
+        }
+        try {
+            JsonNode idNode = OBJECT_MAPPER.readTree(rawJson).get("id");
+            return idNode != null && !idNode.isNull() ? idNode.asText() : null;
+        } catch (Exception ex) {
+            log.warn("Failed to parse checkout session id from raw JSON: {}", ex.getMessage());
+            return null;
+        }
     }
 
     private void updateOrderStatus(Long orderId, String sessionId, OrderStatus newStatus) {
         Optional<OrderEntity> optionalOrder = orderRepository.findByIdWithItems(orderId);
         if (optionalOrder.isEmpty()) {
+            log.warn("Stripe webhook could not find order {} for session {}", orderId, sessionId);
             return;
         }
         OrderEntity order = optionalOrder.get();
         if (newStatus == OrderStatus.PAID) {
             if (order.getStatus() == OrderStatus.PAID) {
+                log.info("Stripe webhook ignored duplicate PAID for order {}", orderId);
                 return;
             }
             if (order.getStatus() != OrderStatus.PENDING_PAYMENT) {
@@ -145,6 +220,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
         if (newStatus == OrderStatus.PAYMENT_FAILED) {
             if (order.getStatus() == OrderStatus.PAYMENT_FAILED) {
+                log.info("Stripe webhook ignored duplicate PAYMENT_FAILED for order {}", orderId);
                 return;
             }
             if (order.getStatus() != OrderStatus.PENDING_PAYMENT) {

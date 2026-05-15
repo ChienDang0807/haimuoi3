@@ -3,8 +3,9 @@
 <div class="min-h-screen bg-background text-on-background">
   <app-account-sidebar />
 
-  <main class="min-h-screen pt-20 md:pl-72">
-    <div class="mx-auto max-w-4xl space-y-10 p-8 lg:p-12">
+  <main class="min-h-screen pt-20 md:pl-72 p-4 md:p-8">
+    <div class="rounded-[32px] bg-white p-6 shadow-sm border border-gray-100 md:p-10 lg:p-12">
+      <div class="mx-auto max-w-4xl space-y-10">
       <div class="flex flex-wrap items-center justify-between gap-4">
         <a
           class="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary hover:underline"
@@ -28,15 +29,18 @@
         </div>
       } @else {
         @let o = order()!;
-        <header class="space-y-2">
-          <h1 class="text-4xl font-black uppercase tracking-tighter text-on-surface">Order #{{ o.id }}</h1>
-          <p class="text-secondary">{{ o.createdAt | date: 'medium' }}</p>
-          <span
-            class="inline-flex items-center rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-wider"
-            [ngClass]="statusBadgeClass(o.status)">
-            {{ statusLabel(o.status) }}
-          </span>
-        </header>
+        <div class="mb-8 flex flex-col">
+          <span class="mb-2 text-[10px] font-black uppercase tracking-widest text-primary">Order History</span>
+          <h2 class="text-5xl font-black tracking-tighter text-on-surface">Order #{{ o.id }}</h2>
+          <div class="mt-4 flex items-center gap-4">
+            <p class="text-secondary">{{ o.createdAt | date: 'medium' }}</p>
+            <span
+              class="inline-flex items-center rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-wider"
+              [ngClass]="statusBadgeClass(o.status)">
+              {{ statusLabel(o.status) }}
+            </span>
+          </div>
+        </div>
 
         <div class="flex flex-wrap gap-3">
           <button
@@ -55,7 +59,7 @@
           </button>
         </div>
 
-        <div class="grid grid-cols-1 gap-6 rounded-xl border border-primary/10 bg-white p-6 shadow-sm md:grid-cols-2">
+        <div class="grid grid-cols-1 gap-6 rounded-xl border border-gray-100 bg-slate-50 p-6 shadow-sm md:grid-cols-2">
           <div>
             <h5 class="mb-2 text-[10px] font-black uppercase tracking-wider text-secondary">Customer</h5>
             <p class="font-medium text-on-surface">{{ o.customerName }}</p>
@@ -71,7 +75,7 @@
         </div>
 
         @if (o.items && o.items.length > 0) {
-          <div class="overflow-hidden rounded-xl border border-primary/10 bg-white shadow-sm">
+          <div class="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
             <div class="border-b border-primary/5 bg-slate-50/50 px-6 py-4">
               <h3 class="text-lg font-bold text-on-surface">Order summary</h3>
             </div>
@@ -97,6 +101,7 @@
           </div>
         }
       }
+      </div>
     </div>
   </main>
 </div>

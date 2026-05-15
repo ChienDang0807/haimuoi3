@@ -22,6 +22,10 @@ export const ApiEndpoints = {
    */
   SHOPS_MY_SHOP: '/v1/shops/my-shop',
   SHOPS_MY_SHOP_ORDERS: '/v1/shops/my-shop/orders',
+  /** Shop owner inventory (JWT SHOP_OWNER): GET list, PATCH adjust stock */
+  SHOPS_MY_SHOP_INVENTORY: '/v1/shops/my-shop/inventory',
+  /** Shop owner dashboard aggregate (JWT SHOP_OWNER); query `period=7d` in phase 1 */
+  SHOPS_MY_SHOP_DASHBOARD: '/v1/shops/my-shop/dashboard',
   GLOBAL_CATEGORIES: '/v1/global-categories',
   /** Shop owner (JWT SHOP_OWNER): catalog CRUD helpers */
   SHOPS_MY_SHOP_PRODUCTS: '/v1/shops/my-shop/products',
@@ -52,4 +56,6 @@ export const ApiEndpoints = {
   AUTH_REGISTER: '/v1/auth/register',
   AUTH_ME: '/v1/auth/me',
   AUTH_LOGOUT: '/v1/auth/logout',
+  NOTIFICATIONS_ME: '/v1/notifications/me',
+  NOTIFICATIONS_READ_ALL: '/v1/notifications/read-all',
 } as const;

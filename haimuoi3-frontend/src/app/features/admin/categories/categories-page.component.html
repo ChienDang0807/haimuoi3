@@ -1,96 +1,136 @@
-<div class="flex min-h-screen bg-background text-on-background">
+<div class="flex min-h-screen bg-background">
   <app-admin-sidebar />
 
-  <main class="flex-1 flex flex-col min-w-0">
-    <app-admin-header pageTitle="Shop — Categories" searchPlaceholder="Search resources..." />
+  <div class="flex-grow flex flex-col">
+    <app-admin-header pageTitle="Quản lý danh mục" searchPlaceholder="Tìm kiếm danh mục..." />
 
-    <div class="p-12">
-      <div class="max-w-7xl">
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
-          <div>
-            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 mb-2 block">Shop catalog</span>
-            <h1 class="text-6xl font-black tracking-tighter leading-none text-on-surface">Categories</h1>
-            <p class="text-secondary text-sm mt-4 max-w-xl">
-              Create shop-level categories (optional link to a global category). Stored in
-              <code class="text-xs">shop_categories</code>. Requires SHOP_OWNER.
-            </p>
-          </div>
-          <button
-            type="button"
-            class="group flex items-center gap-3 bg-white text-on-surface px-8 py-5 rounded-xl shadow-xl shadow-surface-tint/5 hover:bg-surface-container-low transition-all border border-outline-variant/50"
+    <main class="p-12 space-y-12 animate-in fade-in duration-700">
+      <div class="flex flex-col gap-6">
+        <div>
+          <button type="button"
+            class="bg-primary text-on-primary px-8 py-4 rounded-xl font-black uppercase tracking-widest text-[11px] flex items-center gap-3 shadow-xl shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all active:translate-y-0"
             (click)="openAddCategory()">
-            <span class="material-symbols-outlined font-black">add</span>
-            <span class="font-black uppercase text-xs tracking-widest">Add shop category</span>
+            <span class="material-symbols-outlined text-lg">category</span>
+            Thêm danh mục
           </button>
         </div>
-
-        @if (loadError()) {
-          <div class="mb-6 rounded-lg border border-error/30 bg-error-container/30 px-6 py-4 text-sm text-on-surface">
-            {{ loadError() }}
-          </div>
-        }
-
-        <div class="bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm">
-          <div class="grid grid-cols-12 gap-4 px-8 py-4 bg-surface-container border-b border-outline-variant">
-            <div class="col-span-5 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Category</div>
-            <div class="col-span-2 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Status</div>
-            <div class="col-span-2 text-[10px] font-black uppercase tracking-widest text-on-surface-variant text-center">
-              Global
-            </div>
-            <div class="col-span-3 text-[10px] font-black uppercase tracking-widest text-on-surface-variant text-right">
-              Shop category id
-            </div>
-          </div>
-
-          <div class="divide-y divide-outline-variant">
-            @if (isLoading()) {
-              <div class="px-8 py-10 text-secondary text-sm">Loading…</div>
-            } @else if (categories().length === 0) {
-              <div class="px-8 py-10 text-secondary text-sm">
-                No shop categories yet. Create one above, then assign products to it.
-              </div>
-            } @else {
-              @for (row of categories(); track trackById($index, row)) {
-                <div class="grid grid-cols-12 gap-4 px-8 py-5 items-center hover:bg-surface-container-low transition-colors">
-                  <div class="col-span-5 flex items-center gap-4">
-                    <div class="w-10 h-10 rounded bg-primary-container flex items-center justify-center text-primary">
-                      <span class="material-symbols-outlined">category</span>
-                    </div>
-                    <div>
-                      <h4 class="font-black text-on-surface tracking-tight">{{ row.name }}</h4>
-                      <p class="text-xs text-secondary font-mono">{{ row.slug }}</p>
-                    </div>
-                  </div>
-
-                  <div class="col-span-2">
-                    <span [class]="statusBadgeClass(row.active)">{{ statusLabel(row.active) }}</span>
-                  </div>
-
-                  <div
-                    class="col-span-2 text-center text-xs text-on-surface truncate"
-                    [title]="row.globalCategoryName ?? row.globalCategoryId ?? ''">
-                    {{ row.globalCategoryName ?? row.globalCategoryId ?? '—' }}
-                  </div>
-
-                  <div class="col-span-3 text-right text-xs font-mono text-on-surface-variant truncate" [title]="row.shopCategoryId">
-                    {{ row.shopCategoryId }}
-                  </div>
-                </div>
-              }
-            }
-          </div>
-
-          <div class="px-8 py-4 bg-surface-container-low">
-            <button
-              type="button"
-              class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors"
-              (click)="openAddCategory()">
-              <span class="material-symbols-outlined text-sm">add_circle</span>
-              Quick add shop category
-            </button>
-          </div>
+        <div class="space-y-2">
+          <h1 class="text-6xl font-black tracking-tighter text-on-surface">Danh mục</h1>
+          <p class="text-lg text-secondary max-w-2xl leading-relaxed font-medium">
+            Tạo và quản lý các nhóm sản phẩm trong cửa hàng của bạn để khách hàng dễ dàng tìm kiếm.
+          </p>
         </div>
       </div>
-    </div>
-  </main>
+
+      @if (loadError()) {
+      <div
+        class="rounded-2xl border border-red-200 bg-red-50 px-8 py-6 text-sm text-red-700 flex items-center gap-3 shadow-sm">
+        <span class="material-symbols-outlined text-red-500">error</span>
+        {{ loadError() }}
+      </div>
+      }
+
+      <div
+        class="bg-white rounded-2xl shadow-2xl shadow-slate-900/5 overflow-hidden border border-slate-100 ring-1 ring-black/[0.02]">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50/80 border-b border-slate-100">
+                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Thứ tự</th>
+                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 w-16">Ảnh</th>
+                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Tên danh mục</th>
+                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Đường dẫn</th>
+                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Liên kết hệ thống
+                </th>
+                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Trạng thái</th>
+                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">Thao
+                  tác</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+              @if (isLoading()) {
+              <tr>
+                <td colspan="7" class="px-8 py-20 text-center">
+                  <div class="flex flex-col items-center gap-3">
+                    <span
+                      class="material-symbols-outlined animate-spin text-4xl text-primary/40">progress_activity</span>
+                    <p class="text-sm font-bold text-slate-400 italic">Đang tải dữ liệu...</p>
+                  </div>
+                </td>
+              </tr>
+              } @else if (categories().length === 0) {
+              <tr>
+                <td colspan="7" class="px-8 py-20 text-center">
+                  <div class="flex flex-col items-center gap-4">
+                    <span class="material-symbols-outlined text-5xl text-slate-200">folder_open</span>
+                    <p class="text-slate-400 font-medium">Chưa có danh mục nào. Hãy nhấn "Thêm danh mục" để bắt đầu.</p>
+                  </div>
+                </td>
+              </tr>
+              } @else {
+              @for (cat of categories(); track trackById($index, cat)) {
+              <tr class="hover:bg-slate-50/50 transition-colors group">
+                <td class="px-8 py-6 font-mono text-sm text-slate-400">
+                  {{ cat.displayOrder }}
+                </td>
+                <td class="px-8 py-6">
+                  <div
+                    class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden flex items-center justify-center ring-1 ring-black/[0.05]">
+                    @if (cat.imageUrl) {
+                    <img [src]="cat.imageUrl" [alt]="cat.name" class="w-full h-full object-cover" />
+                    } @else {
+                    <span class="material-symbols-outlined text-slate-300">category</span>
+                    }
+                  </div>
+                </td>
+                <td class="px-8 py-6 font-bold text-slate-900 tracking-tight">
+                  {{ cat.name }}
+                </td>
+                <td class="px-8 py-6 text-sm text-slate-500 italic">
+                  /{{ cat.slug }}
+                </td>
+                <td class="px-8 py-6">
+                  @if (cat.globalCategoryName) {
+                  <span
+                    class="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest rounded-full shadow-sm">
+                    {{ cat.globalCategoryName }}
+                  </span>
+                  } @else {
+                  <span class="text-xs text-slate-300">—</span>
+                  }
+                </td>
+                <td class="px-8 py-6">
+                  <button (click)="onToggleActive(cat)" class="flex items-center gap-2 group/btn">
+                    <span class="w-2.5 h-2.5 rounded-full transition-transform group-hover/btn:scale-125"
+                      [ngClass]="cat.active ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]' : 'bg-slate-300'">
+                    </span>
+                    <span class="text-[10px] font-black uppercase tracking-widest transition-colors"
+                      [ngClass]="cat.active ? 'text-emerald-600' : 'text-slate-400'">
+                      {{ statusLabel(cat.active) }}
+                    </span>
+                  </button>
+                </td>
+                <td class="px-8 py-6 text-right">
+                  <div class="flex justify-end gap-2">
+                    <button (click)="onEditCategory(cat)"
+                      class="p-2.5 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
+                      title="Chỉnh sửa">
+                      <span class="material-symbols-outlined text-xl">edit_square</span>
+                    </button>
+                    <button (click)="onDeleteCategory(cat)"
+                      class="p-2.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                      title="Xóa">
+                      <span class="material-symbols-outlined text-xl">delete</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              }
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
 </div>

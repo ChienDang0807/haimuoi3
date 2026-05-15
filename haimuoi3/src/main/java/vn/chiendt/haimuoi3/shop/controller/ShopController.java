@@ -8,17 +8,24 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import vn.chiendt.haimuoi3.common.dto.ApiResponse;
+import vn.chiendt.haimuoi3.inventory.dto.request.AdjustStockRequest;
+import vn.chiendt.haimuoi3.inventory.dto.response.InventoryItemResponse;
+import vn.chiendt.haimuoi3.inventory.service.InventoryService;
 import vn.chiendt.haimuoi3.order.dto.request.UpdateOrderStatusRequest;
 import vn.chiendt.haimuoi3.order.dto.response.OrderResponse;
 import vn.chiendt.haimuoi3.order.service.OrderService;
 import vn.chiendt.haimuoi3.product.dto.request.CreateProductRequest;
+import vn.chiendt.haimuoi3.product.dto.request.UpdateProductRequest;
 import vn.chiendt.haimuoi3.product.dto.response.ShopProductResponse;
 import vn.chiendt.haimuoi3.product.service.ProductService;
 import vn.chiendt.haimuoi3.shop.dto.request.CreateShopCategoryRequest;
+import vn.chiendt.haimuoi3.shop.dto.request.UpdateShopCategoryRequest;
 import vn.chiendt.haimuoi3.shop.dto.request.UpdateShopRequest;
 import vn.chiendt.haimuoi3.shop.dto.response.ShopCategoryResponse;
+import vn.chiendt.haimuoi3.shop.dto.response.ShopDashboardResponse;
 import vn.chiendt.haimuoi3.shop.dto.response.ShopResponse;
 import vn.chiendt.haimuoi3.shop.service.ShopCategoryService;
+import vn.chiendt.haimuoi3.shop.service.ShopDashboardService;
 import vn.chiendt.haimuoi3.shop.service.ShopService;
 import vn.chiendt.haimuoi3.user.model.postgres.UserEntity;
 
@@ -31,11 +38,21 @@ public class ShopController {
     private final OrderService orderService;
     private final ProductService productService;
     private final ShopCategoryService shopCategoryService;
+    private final ShopDashboardService shopDashboardService;
+    private final InventoryService inventoryService;
 
     @GetMapping("/my-shop")
     public ApiResponse<ShopResponse> getMyShop(@AuthenticationPrincipal UserEntity currentUser) {
         ShopResponse shop = shopService.getShopByOwnerId(currentUser.getId());
         return ApiResponse.success(shop, "Shop retrieved successfully");
+    }
+
+    @GetMapping("/my-shop/dashboard")
+    public ApiResponse<ShopDashboardResponse> getMyShopDashboard(
+            @AuthenticationPrincipal UserEntity currentUser,
+            @RequestParam(defaultValue = "7d") String period) {
+        ShopDashboardResponse dashboard = shopDashboardService.getDashboardForShopOwner(currentUser.getId(), period);
+        return ApiResponse.success(dashboard, "Dashboard retrieved successfully");
     }
 
     @PutMapping("/my-shop")
@@ -50,9 +67,16 @@ public class ShopController {
     public ApiResponse<Page<OrderResponse>> listMyShopOrders(
             @AuthenticationPrincipal UserEntity currentUser,
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        ShopResponse shop = shopService.getShopByOwnerId(currentUser.getId());
-        Page<OrderResponse> page = orderService.getOrdersByShopId(shop.getId(), pageable);
+        Page<OrderResponse> page = orderService.getOrdersForShopOwner(currentUser.getId(), pageable);
         return ApiResponse.success(page, "Orders retrieved successfully");
+    }
+
+    @GetMapping("/my-shop/orders/{id}")
+    public ApiResponse<OrderResponse> getMyShopOrderById(
+            @AuthenticationPrincipal UserEntity currentUser,
+            @PathVariable Long id) {
+        OrderResponse order = orderService.getOrderForShopOwner(currentUser.getId(), id);
+        return ApiResponse.success(order, "Order retrieved successfully");
     }
 
     @PatchMapping("/my-shop/orders/{id}/status")
@@ -68,8 +92,7 @@ public class ShopController {
     public ApiResponse<Page<ShopProductResponse>> listMyShopProducts(
             @AuthenticationPrincipal UserEntity currentUser,
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        ShopResponse shop = shopService.getShopByOwnerId(currentUser.getId());
-        Page<ShopProductResponse> page = productService.findAllByShopId(String.valueOf(shop.getId()), pageable);
+        Page<ShopProductResponse> page = productService.findAllForShopOwner(currentUser.getId(), pageable);
         return ApiResponse.success(page, "Shop products retrieved successfully");
     }
 
@@ -77,10 +100,25 @@ public class ShopController {
     public ApiResponse<ShopProductResponse> createMyShopProduct(
             @AuthenticationPrincipal UserEntity currentUser,
             @RequestBody CreateProductRequest request) {
-        ShopResponse shop = shopService.getShopByOwnerId(currentUser.getId());
-        request.setShopId(String.valueOf(shop.getId()));
-        ShopProductResponse created = productService.save(request);
+        ShopProductResponse created = productService.createForShopOwner(currentUser.getId(), request);
         return ApiResponse.success(created, "Product created successfully");
+    }
+
+    @PutMapping("/my-shop/products/{productId}")
+    public ApiResponse<ShopProductResponse> updateMyShopProduct(
+            @AuthenticationPrincipal UserEntity currentUser,
+            @PathVariable String productId,
+            @RequestBody UpdateProductRequest request) {
+        ShopProductResponse updated = productService.updateForShopOwner(currentUser.getId(), productId, request);
+        return ApiResponse.success(updated, "Product updated successfully");
+    }
+
+    @PatchMapping("/my-shop/products/{productId}/status")
+    public ApiResponse<ShopProductResponse> toggleMyShopProductStatus(
+            @AuthenticationPrincipal UserEntity currentUser,
+            @PathVariable String productId) {
+        ShopProductResponse updated = productService.toggleStatusForShopOwner(currentUser.getId(), productId);
+        return ApiResponse.success(updated, "Product status updated successfully");
     }
 
     @GetMapping("/my-shop/categories")
@@ -97,6 +135,48 @@ public class ShopController {
             @RequestBody CreateShopCategoryRequest request) {
         ShopCategoryResponse created = shopCategoryService.createShopCategory(currentUser.getId(), request);
         return ApiResponse.success(created, "Shop category created successfully");
+    }
+
+    @PutMapping("/my-shop/categories/{shopCategoryId}")
+    public ApiResponse<ShopCategoryResponse> updateMyShopCategory(
+            @AuthenticationPrincipal UserEntity currentUser,
+            @PathVariable String shopCategoryId,
+            @RequestBody UpdateShopCategoryRequest request) {
+        ShopCategoryResponse updated = shopCategoryService.updateShopCategory(currentUser.getId(), shopCategoryId, request);
+        return ApiResponse.success(updated, "Shop category updated successfully");
+    }
+
+    @PatchMapping("/my-shop/categories/{shopCategoryId}/active")
+    public ApiResponse<ShopCategoryResponse> toggleMyShopCategoryActive(
+            @AuthenticationPrincipal UserEntity currentUser,
+            @PathVariable String shopCategoryId) {
+        ShopCategoryResponse updated = shopCategoryService.toggleActive(currentUser.getId(), shopCategoryId);
+        return ApiResponse.success(updated, "Shop category status toggled successfully");
+    }
+
+    @DeleteMapping("/my-shop/categories/{shopCategoryId}")
+    public ApiResponse<Void> deleteMyShopCategory(
+            @AuthenticationPrincipal UserEntity currentUser,
+            @PathVariable String shopCategoryId) {
+        shopCategoryService.deleteShopCategory(currentUser.getId(), shopCategoryId);
+        return ApiResponse.success(null, "Shop category deleted successfully");
+    }
+
+    @GetMapping("/my-shop/inventory")
+    public ApiResponse<Page<InventoryItemResponse>> listMyShopInventory(
+            @AuthenticationPrincipal UserEntity currentUser,
+            @PageableDefault(size = 20, sort = "quantityOnHand", direction = Sort.Direction.ASC) Pageable pageable) {
+        Page<InventoryItemResponse> page = inventoryService.getInventoryForShopOwner(currentUser.getId(), pageable);
+        return ApiResponse.success(page, "Inventory retrieved successfully");
+    }
+
+    @PatchMapping("/my-shop/inventory/{productId}")
+    public ApiResponse<InventoryItemResponse> adjustMyShopInventory(
+            @AuthenticationPrincipal UserEntity currentUser,
+            @PathVariable String productId,
+            @RequestBody AdjustStockRequest request) {
+        InventoryItemResponse updated = inventoryService.adjustStockForShopOwner(currentUser.getId(), productId, request);
+        return ApiResponse.success(updated, "Stock adjusted successfully");
     }
 
     @GetMapping("/by-id/{id}")

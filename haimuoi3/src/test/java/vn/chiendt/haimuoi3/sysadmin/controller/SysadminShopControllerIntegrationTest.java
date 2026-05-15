@@ -5,13 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import vn.chiendt.haimuoi3.common.config.JwtAuthenticationFilter;
 import vn.chiendt.haimuoi3.common.config.JwtTokenProvider;
@@ -45,13 +44,13 @@ class SysadminShopControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @MockitoBean
     private ShopManagementService shopManagementService;
 
-    @MockBean
+    @MockitoBean
     private JwtTokenProvider jwtTokenProvider;
 
-    @MockBean
+    @MockitoBean
     private UserRepository userRepository;
 
     @TestConfiguration
@@ -102,10 +101,10 @@ class SysadminShopControllerIntegrationTest {
                         .param("page", "0")
                         .param("size", "20"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.shops").isArray())
-                .andExpect(jsonPath("$.data.currentPage").value(0))
-                .andExpect(jsonPath("$.data.totalElements").value(1));
+                .andExpect(jsonPath("$.code").value(1000))
+                .andExpect(jsonPath("$.result.shops").isArray())
+                .andExpect(jsonPath("$.result.currentPage").value(0))
+                .andExpect(jsonPath("$.result.totalElements").value(1));
 
         verify(shopManagementService).findAllShops(any());
     }
@@ -126,10 +125,10 @@ class SysadminShopControllerIntegrationTest {
         // When & Then
         mockMvc.perform(get("/api/v1/sysadmin/shops/{shopId}", 1L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.id").value(1))
-                .andExpect(jsonPath("$.data.shopName").value("Test Shop"))
-                .andExpect(jsonPath("$.data.slug").value("test-shop"));
+                .andExpect(jsonPath("$.code").value(1000))
+                .andExpect(jsonPath("$.result.id").value(1))
+                .andExpect(jsonPath("$.result.shopName").value("Test Shop"))
+                .andExpect(jsonPath("$.result.slug").value("test-shop"));
 
         verify(shopManagementService).getShopById(1L);
     }
@@ -174,10 +173,10 @@ class SysadminShopControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.shopName").value("New Shop"))
-                .andExpect(jsonPath("$.data.slug").value("new-shop"))
-                .andExpect(jsonPath("$.data.status").value("ACTIVE"));
+                .andExpect(jsonPath("$.code").value(1000))
+                .andExpect(jsonPath("$.result.shopName").value("New Shop"))
+                .andExpect(jsonPath("$.result.slug").value("new-shop"))
+                .andExpect(jsonPath("$.result.status").value("ACTIVE"));
 
         verify(shopManagementService).createShop(any(CreateShopRequest.class));
     }
@@ -206,8 +205,8 @@ class SysadminShopControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.shopName").value("Updated Shop Name"));
+                .andExpect(jsonPath("$.code").value(1000))
+                .andExpect(jsonPath("$.result.shopName").value("Updated Shop Name"));
 
         verify(shopManagementService).updateShop(anyLong(), any(UpdateShopRequest.class));
     }
@@ -221,7 +220,7 @@ class SysadminShopControllerIntegrationTest {
         // When & Then
         mockMvc.perform(delete("/api/v1/sysadmin/shops/{shopId}", 1L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.code").value(1000))
                 .andExpect(jsonPath("$.message").value("Shop deleted successfully"));
 
         verify(shopManagementService).deleteShop(1L);
@@ -251,9 +250,9 @@ class SysadminShopControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.ownerId").value(1))
-                .andExpect(jsonPath("$.data.ownerName").value("Test Owner"));
+                .andExpect(jsonPath("$.code").value(1000))
+                .andExpect(jsonPath("$.result.ownerId").value(1))
+                .andExpect(jsonPath("$.result.ownerName").value("Test Owner"));
 
         verify(shopManagementService).assignOwner(anyLong(), any(AssignOwnerRequest.class));
     }
@@ -281,9 +280,9 @@ class SysadminShopControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data.ownerId").value(2))
-                .andExpect(jsonPath("$.data.ownerName").value("New Owner"));
+                .andExpect(jsonPath("$.code").value(1000))
+                .andExpect(jsonPath("$.result.ownerId").value(2))
+                .andExpect(jsonPath("$.result.ownerName").value("New Owner"));
 
         verify(shopManagementService).changeOwner(anyLong(), any(AssignOwnerRequest.class));
     }
@@ -302,7 +301,7 @@ class SysadminShopControllerIntegrationTest {
         // When & Then
         mockMvc.perform(delete("/api/v1/sysadmin/shops/{shopId}/owner", 1L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true));
+                .andExpect(jsonPath("$.code").value(1000));
 
         verify(shopManagementService).removeOwner(1L);
     }

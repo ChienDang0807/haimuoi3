@@ -3,17 +3,16 @@
 <div class="min-h-screen bg-background text-on-background">
   <app-account-sidebar />
 
-  <main class="min-h-screen pt-20 md:pl-72">
-    <div class="mx-auto max-w-6xl space-y-16 p-8 lg:p-12">
-      <header class="space-y-4">
-        <span class="text-[10px] font-black uppercase tracking-widest text-primary">Account</span>
-        <h1 class="text-4xl font-black uppercase tracking-tighter text-on-surface md:text-5xl lg:text-6xl">
-          Order Tracking
-        </h1>
-        <p class="max-w-2xl text-lg font-medium leading-relaxed text-secondary">
-          Monitor your orders from placement to delivery. Detailed status for each purchase.
-        </p>
-      </header>
+  <main class="min-h-screen pt-20 md:pl-72 p-4 md:p-8">
+    <div class="rounded-[32px] bg-white p-6 shadow-sm border border-gray-100 md:p-10 lg:p-12">
+      <div class="mx-auto max-w-6xl space-y-16">
+        <div class="mb-8 flex flex-col">
+          <span class="mb-2 text-[10px] font-black uppercase tracking-widest text-primary">Account</span>
+          <h2 class="text-5xl font-black tracking-tighter text-on-surface">Order Tracking</h2>
+          <p class="mt-4 max-w-2xl text-lg font-medium leading-relaxed text-secondary">
+            Monitor your orders from placement to delivery. Detailed status for each purchase.
+          </p>
+        </div>
 
       @if (loading()) {
         <div class="flex flex-col items-center justify-center py-24">
@@ -28,21 +27,21 @@
       } @else {
         <p class="text-xs text-secondary">Snapshot cards: total orders is global; other counts are for the current page only.</p>
         <section class="grid grid-cols-1 gap-8 md:grid-cols-3">
-          <div class="rounded-xl border-b-4 border-primary bg-surface-container-low p-8 shadow-sm">
+          <div class="rounded-xl border-b-4 border-primary bg-slate-50 p-8 shadow-sm">
             <div class="mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-secondary">Total orders</div>
             <div class="text-4xl font-black text-on-surface">{{ totalOrders() }}</div>
           </div>
-          <div class="rounded-xl bg-surface-container-low p-8 shadow-sm">
+          <div class="rounded-xl border border-gray-100 bg-slate-50 p-8 shadow-sm">
             <div class="mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-secondary">Completed this month (page)</div>
             <div class="text-4xl font-black text-on-surface">{{ completedThisMonthOnPage() }}</div>
           </div>
-          <div class="rounded-xl bg-surface-container-low p-8 shadow-sm">
+          <div class="rounded-xl border border-gray-100 bg-slate-50 p-8 shadow-sm">
             <div class="mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-secondary">Active on page / In transit</div>
             <div class="text-4xl font-black text-primary">{{ activeOnPageCount() }} / {{ inTransitOnPage() }}</div>
           </div>
         </section>
 
-        <section class="overflow-hidden rounded-xl bg-white shadow-2xl shadow-primary/5">
+        <section class="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
           <div class="overflow-x-auto">
             <table class="w-full border-collapse text-left">
               <thead>
@@ -128,6 +127,7 @@
           </div>
         </section>
       }
+      </div>
     </div>
   </main>
 </div>

@@ -5,9 +5,9 @@
     }
     <div class="relative w-full">
       <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/50">search</span>
-      <input 
-        class="w-full bg-surface-container border-none rounded-lg pl-12 pr-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 placeholder:text-on-surface-variant/40" 
-        [placeholder]="searchPlaceholder()" 
+      <input
+        class="w-full bg-surface-container border-none rounded-lg pl-12 pr-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 placeholder:text-on-surface-variant/40"
+        [placeholder]="searchPlaceholder()"
         type="text"
         (input)="onSearchInput($event)" />
     </div>
@@ -16,19 +16,42 @@
   <div class="flex items-center gap-6">
     <app-notification-bell />
 
-    <div class="flex items-center gap-3 pl-6 border-l border-outline-variant">
+    <div class="account-menu-root relative flex items-center gap-3 pl-6 border-l border-outline-variant">
       <div class="text-right">
-        <p class="text-sm font-bold leading-tight">Admin User</p>
-        <p class="text-[10px] font-black uppercase tracking-widest opacity-50">Store Admin</p>
+        <p class="text-sm font-bold leading-tight">{{ displayName() }}</p>
+        <p class="text-[10px] font-black uppercase tracking-widest opacity-50">{{ shopLabel() }}</p>
       </div>
-      <button 
-        class="w-10 h-10 rounded-full object-cover border-2 border-primary/10 overflow-hidden"
-        (click)="onProfileClick()">
-        <img 
-          alt="Store Admin" 
-          class="w-full h-full object-cover"
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvh3nqGi23y1-61RhCFvWPFBZ81khNRXv5J-a5SPLZR6WUQOEQoduuN-Wnk8D0MJc3blByIs_hxIApsuW8JNOMsiLAhWVAWGTGRxt7dhd8i1SAgdpgdBLLofVYIlOpWiWgKxZ7ysOVKTEHc2ejpGUw3M3Sud5f0u_sxo8jdM2fOPTNk9CnVbSKNd20IFwIBvrnjF5P3TKoEI4-tQW1dvEmKcBWDUNhTsR7bV-LPXDxAEPptPSPGoQOXQ1MFnaGoBhDEQjrNb581GU" />
+      <button
+        type="button"
+        class="w-10 h-10 rounded-full border-2 border-primary/10 bg-primary/10 text-sm font-black text-primary"
+        (click)="onAccountButtonClick($event)"
+        [attr.aria-expanded]="isAccountMenuOpen()"
+        aria-controls="admin-account-menu-panel"
+        aria-haspopup="true"
+        [attr.aria-label]="'Account menu for ' + displayName()">
+        {{ accountInitial() }}
       </button>
+      @if (isAccountMenuOpen()) {
+        <div
+          id="admin-account-menu-panel"
+          class="absolute right-0 top-full z-[70] mt-2 w-56 overflow-hidden rounded-lg border border-outline-variant bg-surface shadow-xl"
+          role="menu">
+          <div class="border-b border-outline-variant px-4 py-3">
+            <p class="text-sm font-bold text-on-surface">{{ displayName() }}</p>
+            @if (displayEmail()) {
+              <p class="text-xs text-on-surface-variant">{{ displayEmail() }}</p>
+            }
+          </div>
+          <button
+            type="button"
+            class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-error transition-colors hover:bg-error-container/10"
+            (click)="onLogoutFromMenu()"
+            role="menuitem">
+            <span class="material-symbols-outlined text-lg">logout</span>
+            <span>Logout</span>
+          </button>
+        </div>
+      }
     </div>
   </div>
 </header>

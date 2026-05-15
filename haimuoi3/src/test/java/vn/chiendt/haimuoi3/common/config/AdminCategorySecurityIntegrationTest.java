@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
 import vn.chiendt.haimuoi3.media.dto.response.MediaUploadResponse;
 import vn.chiendt.haimuoi3.media.model.MediaTargetType;
@@ -45,13 +45,13 @@ class AdminCategorySecurityIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private GlobalCategoryService globalCategoryService;
 
-    @MockBean
+    @MockitoBean
     private MediaService mediaService;
 
-    @MockBean
+    @MockitoBean
     private ProductService productService;
 
     @Test
@@ -186,9 +186,9 @@ class AdminCategorySecurityIntegrationTest {
         }
     }
 
-    @MockBean
+    @MockitoBean
     private JwtTokenProvider jwtTokenProvider;
 
-    @MockBean
+    @MockitoBean
     private UserRepository userRepository;
 }

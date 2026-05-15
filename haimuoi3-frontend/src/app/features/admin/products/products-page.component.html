@@ -2,85 +2,114 @@
   <app-admin-sidebar />
 
   <div class="flex-grow flex flex-col">
-    <app-admin-header pageTitle="Shop — Products" searchPlaceholder="Search resources..." />
+    <app-admin-header pageTitle="Quản lý sản phẩm" searchPlaceholder="Tìm kiếm sản phẩm..." />
 
-    <main class="p-12 space-y-12">
+    <main class="p-12 space-y-12 animate-in fade-in duration-700">
       <div class="flex flex-col gap-6">
         <div>
           <button
             type="button"
-            class="bg-primary text-on-primary px-8 py-4 rounded-lg font-black uppercase tracking-widest text-[10px] flex items-center gap-2 shadow-lg shadow-primary/20 hover:opacity-90 transition-all"
+            class="bg-primary text-on-primary px-8 py-4 rounded-xl font-black uppercase tracking-widest text-[11px] flex items-center gap-3 shadow-xl shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all active:translate-y-0"
             (click)="onNewProduct()">
-            <span class="material-symbols-outlined text-sm">add</span>
-            New Product
+            <span class="material-symbols-outlined text-lg">add_circle</span>
+            Thêm sản phẩm
           </button>
         </div>
         <div class="space-y-2">
-          <h1 class="text-6xl font-black tracking-tighter text-on-surface">Products</h1>
-          <p class="text-lg text-secondary max-w-2xl leading-relaxed">
-            Shop owner: add catalog items (LEGACY) and manage inventory. Requires login as SHOP_OWNER.
+          <h1 class="text-6xl font-black tracking-tighter text-on-surface">Sản phẩm</h1>
+          <p class="text-lg text-secondary max-w-2xl leading-relaxed font-medium">
+            Quản lý danh mục sản phẩm, tồn kho và các thông tin chi tiết của cửa hàng bạn.
           </p>
         </div>
       </div>
 
       @if (loadError()) {
-        <div class="rounded-lg border border-error/30 bg-error-container/30 px-6 py-4 text-sm text-on-surface">
+        <div class="rounded-2xl border border-red-200 bg-red-50 px-8 py-6 text-sm text-red-700 flex items-center gap-3 shadow-sm">
+          <span class="material-symbols-outlined text-red-500">error</span>
           {{ loadError() }}
         </div>
       }
 
-      <div class="bg-white rounded-xl shadow-2xl shadow-primary/5 overflow-hidden border border-outline-variant/10">
+      <div class="bg-white rounded-2xl shadow-2xl shadow-slate-900/5 overflow-hidden border border-slate-100 ring-1 ring-black/[0.02]">
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="bg-surface-container-low border-b border-outline-variant/50">
-                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Image</th>
-                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Name</th>
-                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">SKU</th>
-                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Category</th>
-                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Price</th>
-                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Status</th>
+              <tr class="bg-slate-50/80 border-b border-slate-100">
+                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Hình ảnh</th>
+                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Thông tin sản phẩm</th>
+                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">SKU</th>
+                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Giá bán</th>
+                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Trạng thái</th>
+                <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">Thao tác</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-outline-variant/30">
+            <tbody class="divide-y divide-slate-50">
               @if (isLoading()) {
                 <tr>
-                  <td colspan="6" class="px-8 py-10 text-secondary text-sm">Loading…</td>
+                  <td colspan="6" class="px-8 py-20 text-center">
+                    <div class="flex flex-col items-center gap-3">
+                      <span class="material-symbols-outlined animate-spin text-4xl text-primary/40">progress_activity</span>
+                      <p class="text-sm font-bold text-slate-400 italic">Đang tải dữ liệu...</p>
+                    </div>
+                  </td>
                 </tr>
               } @else if (products().length === 0) {
                 <tr>
-                  <td colspan="6" class="px-8 py-10 text-secondary text-sm">No products yet. Use New Product to create one.</td>
+                  <td colspan="6" class="px-8 py-20 text-center">
+                    <div class="flex flex-col items-center gap-4">
+                      <span class="material-symbols-outlined text-5xl text-slate-200">inventory_2</span>
+                      <p class="text-slate-400 font-medium">Chưa có sản phẩm nào. Hãy nhấn "Thêm sản phẩm" để bắt đầu.</p>
+                    </div>
+                  </td>
                 </tr>
               } @else {
                 @for (row of products(); track row.id) {
-                  <tr class="hover:bg-surface-container-lowest transition-colors group">
+                  <tr class="hover:bg-slate-50/50 transition-colors group">
                     <td class="px-8 py-6">
-                      <div class="w-16 h-16 rounded-lg bg-surface-container overflow-hidden flex items-center justify-center">
+                      <div class="w-16 h-16 rounded-xl bg-slate-100 overflow-hidden flex items-center justify-center ring-1 ring-black/[0.05]">
                         @if (row.productPictures?.length) {
                           <img [src]="row.productPictures![0].url" [alt]="row.name" class="w-full h-full object-cover" />
                         } @else {
-                          <span class="material-symbols-outlined text-on-surface-variant">inventory</span>
+                          <span class="material-symbols-outlined text-slate-300">image</span>
                         }
                       </div>
                     </td>
-                    <td class="px-8 py-6">
-                      <p class="font-bold text-on-surface tracking-tight">{{ row.name }}</p>
-                      <p class="text-sm text-secondary line-clamp-2">{{ row.description }}</p>
+                    <td class="px-8 py-6 max-w-md">
+                      <p class="font-bold text-slate-900 tracking-tight text-base mb-1">{{ row.name }}</p>
+                      <div class="flex flex-wrap gap-2 mb-2">
+                        <span class="px-2 py-0.5 bg-slate-100 text-slate-500 text-[9px] font-bold uppercase tracking-wider rounded-md">
+                          {{ row.shopCategoryName ?? 'Không có danh mục' }}
+                        </span>
+                        @if (row.brand) {
+                          <span class="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[9px] font-bold uppercase tracking-wider rounded-md">
+                            {{ row.brand }}
+                          </span>
+                        }
+                      </div>
+                      <p class="text-xs text-slate-400 line-clamp-1 italic">{{ row.description }}</p>
                     </td>
-                    <td class="px-8 py-6 font-mono text-sm text-on-surface-variant">{{ row.sku ?? '—' }}</td>
+                    <td class="px-8 py-6 font-mono text-xs text-slate-500">{{ row.sku ?? '—' }}</td>
+                    <td class="px-8 py-6 font-black text-slate-900 text-lg">{{ formatPrice(row.price) }}</td>
                     <td class="px-8 py-6">
-                      <span
-                        class="px-3 py-1 bg-secondary-container text-on-secondary-container text-[10px] font-black uppercase tracking-widest rounded-full">
-                        {{ row.globalCategoryName ?? row.globalCategoryId ?? '—' }}
-                      </span>
+                      <button (click)="onToggleProductStatus(row)" class="flex items-center gap-2 group/btn">
+                        <span class="w-2.5 h-2.5 rounded-full transition-transform group-hover/btn:scale-125"
+                          [ngClass]="row.status === 'ACTIVE' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]' : 'bg-slate-300'">
+                        </span>
+                        <span class="text-[10px] font-black uppercase tracking-widest transition-colors"
+                          [ngClass]="row.status === 'ACTIVE' ? 'text-emerald-600' : 'text-slate-400'">
+                          {{ row.status === 'ACTIVE' ? 'Đang bán' : 'Tạm ẩn' }}
+                        </span>
+                      </button>
                     </td>
-                    <td class="px-8 py-6 font-black text-on-surface">{{ formatPrice(row.price) }}</td>
-                    <td class="px-8 py-6">
-                      <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-green-500"></span>
-                        <span class="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">{{
-                          row.status ?? '—'
-                        }}</span>
+                    <td class="px-8 py-6 text-right">
+                      <div class="flex justify-end gap-2">
+                        <button
+                          (click)="onEditProduct(row)"
+                          class="p-2.5 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
+                          title="Chỉnh sửa">
+                          <span class="material-symbols-outlined text-xl">edit_square</span>
+                        </button>
+                        <!-- Thêm nút xóa nếu cần trong tương lai -->
                       </div>
                     </td>
                   </tr>

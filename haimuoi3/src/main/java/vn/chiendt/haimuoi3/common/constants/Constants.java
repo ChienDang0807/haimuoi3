@@ -85,4 +85,10 @@ public final class Constants {
         public static final int MAX_RECENT_LIMIT = 10;
         public static final int MAX_CONTAINS_IDS = 100;
     }
+
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    public static final class Dashboard {
+        public static final int LOW_STOCK_THRESHOLD = 10;
+        public static final int PERIOD_DAYS = 7;
+    }
 }

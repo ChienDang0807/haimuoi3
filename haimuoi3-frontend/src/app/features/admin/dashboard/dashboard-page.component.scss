@@ -1,1 +1,1135 @@
+// ============================================================================
+// SHOP DASHBOARD COMPONENT STYLES
+// ============================================================================
+// Color System (matched with Material Design 3 system)
+$color-primary: #455768;
+$color-primary-container: #e2e8f0;
+$color-on-primary: #ffffff;
+$color-on-primary-container: #1e293b;
+ 
+$color-secondary: #64748b;
+$color-secondary-container: #f1f5f9;
+$color-on-secondary-container: #334155;
+ 
+$color-surface: #ffffff;
+$color-surface-container: #f1f5f9;
+$color-surface-container-low: #f8fafc;
+$color-surface-container-high: #e2e8f0;
+$color-on-surface: #0f172a;
+$color-on-surface-variant: #475569;
+ 
+$color-outline: #94a3b8;
+$color-outline-variant: #e2e8f0;
+ 
+$color-error: #ef4444;
+$color-error-container: #fee2e2;
+$color-on-error: #ffffff;
+$color-on-error-container: #991b1b;
+ 
+$color-background: #f7f7f7;
+ 
+// Emerald & Success
+$color-emerald-500: #10b981;
+$color-emerald-600: #059669;
+$color-emerald-100: #d1fae5;
+$color-emerald-800: #065f46;
+ 
+// Amber & Warning
+$color-amber-100: #fef3c7;
+$color-amber-800: #92400e;
+ 
+// Typography
+$font-family-base: 'Inter', sans-serif;
+$font-size-xs: 0.75rem;
+$font-size-sm: 0.875rem;
+$font-size-base: 1rem;
+$font-size-lg: 1.125rem;
+$font-size-xl: 1.25rem;
+$font-size-2xl: 1.5rem;
+$font-size-3xl: 1.875rem;
+$font-size-4xl: 2.25rem;
+$font-size-6xl: 3.75rem;
+ 
+// Spacing
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-base: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+$spacing-2xl: 3rem;
+ 
+// Border Radius
+$radius-xs: 0.125rem;
+$radius-sm: 0.25rem;
+$radius-md: 0.5rem;
+$radius-lg: 0.75rem;
+$radius-full: 9999px;
+ 
+// Shadow
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+ 
+// Transitions
+$transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+$transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+$transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+ 
+// Breakpoints
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+ 
+// ============================================================================
+// MIXINS
+// ============================================================================
+ 
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ 
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+ 
+@mixin flex-col {
+  display: flex;
+  flex-direction: column;
+}
+ 
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+ 
+@mixin transition($properties: all) {
+  transition: $properties $transition-base;
+}
+ 
+@mixin focus-ring {
+  outline: 2px solid $color-primary;
+  outline-offset: 2px;
+}
+ 
+@mixin card-base {
+  background-color: $color-surface;
+  border: 1px solid $color-outline-variant;
+  border-radius: $radius-md;
+  box-shadow: $shadow-sm;
+}
+ 
+// ============================================================================
+// GLOBAL STYLES
+// ============================================================================
 
+:host {
+  display: block;
+  width: 100%;
+}
+ 
+.dashboard-container {
+  @include flex-col;
+  flex: 1;
+  min-height: 0;
+  background-color: $color-background;
+  font-family: $font-family-base;
+  color: $color-on-surface;
+}
+ 
+.dashboard-main {
+  @include flex-col;
+  flex: 1;
+  overflow-y: auto;
+  padding: $spacing-2xl;
+  gap: $spacing-2xl;
+}
+ 
+// ============================================================================
+// HEADER SECTION
+// ============================================================================
+ 
+.dashboard-header {
+  @include flex-between;
+  margin-bottom: $spacing-2xl;
+  flex-wrap: wrap;
+  gap: $spacing-lg;
+ 
+  @media (max-width: $breakpoint-md) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+ 
+.header-content {
+  @include flex-col;
+  gap: $spacing-sm;
+}
+ 
+.header-title {
+  font-size: $font-size-6xl;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin: 0;
+}
+ 
+.header-subtitle {
+  font-size: $font-size-lg;
+  color: $color-secondary;
+  font-weight: 500;
+  margin: 0;
+}
+ 
+.header-actions {
+  @include flex-center;
+  gap: $spacing-base;
+  flex-wrap: wrap;
+ 
+  @media (max-width: $breakpoint-md) {
+    width: 100%;
+  }
+}
+ 
+// ============================================================================
+// LOADING & ERROR STATES
+// ============================================================================
+ 
+.loading-indicator {
+  @include flex-center;
+  gap: $spacing-sm;
+  font-size: $font-size-sm;
+  color: $color-secondary;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+ 
+  span.material-symbols-outlined {
+    animation: spin 1s linear infinite;
+  }
+}
+ 
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+ 
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+ 
+.alert {
+  @include flex-center;
+  gap: $spacing-base;
+  padding: $spacing-lg;
+  border-radius: $radius-md;
+  font-size: $font-size-sm;
+ 
+  &.alert-error {
+    background-color: rgba($color-error, 0.1);
+    border: 1px solid rgba($color-error, 0.2);
+    color: $color-error;
+ 
+    .material-symbols-outlined {
+      flex-shrink: 0;
+    }
+  }
+}
+ 
+// ============================================================================
+// BUTTONS & DROPDOWNS
+// ============================================================================
+ 
+.btn {
+  @include flex-center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-base;
+  border: none;
+  border-radius: $radius-md;
+  font-size: $font-size-sm;
+  font-weight: 700;
+  cursor: pointer;
+  @include transition();
+  white-space: nowrap;
+ 
+  .material-symbols-outlined {
+    font-size: $font-size-lg;
+  }
+ 
+  &:hover {
+    transform: translateY(-1px);
+  }
+ 
+  &:focus-visible {
+    @include focus-ring;
+  }
+ 
+  &.btn-sm {
+    padding: $spacing-xs $spacing-base;
+  }
+ 
+  &.btn-primary {
+    background-color: $color-primary;
+    color: $color-on-primary;
+ 
+    &:hover {
+      opacity: 0.9;
+    }
+ 
+    &.active {
+      opacity: 1;
+      box-shadow: $shadow-md;
+    }
+  }
+ 
+  &.btn-outline {
+    background-color: $color-surface-container;
+    color: $color-on-surface;
+    border: 1px solid $color-outline-variant;
+ 
+    &:hover {
+      background-color: $color-surface-container-high;
+    }
+ 
+    &.active {
+      background-color: $color-surface-container-high;
+    }
+  }
+ 
+  &.btn-alert {
+    background-color: $color-error;
+    color: $color-on-error;
+ 
+    &:hover {
+      background-color: darken($color-error, 5%);
+    }
+  }
+}
+ 
+.dropdown-wrapper {
+  position: relative;
+}
+ 
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + $spacing-sm);
+  left: 0;
+  min-width: 200px;
+  background-color: $color-surface;
+  border: 1px solid $color-outline-variant;
+  border-radius: $radius-md;
+  box-shadow: $shadow-lg;
+  z-index: 10;
+  animation: dropdownFadeIn $transition-fast;
+ 
+  &.dropdown-menu-right {
+    left: auto;
+    right: 0;
+  }
+}
+ 
+.dropdown-item {
+  @include flex-center;
+  gap: $spacing-sm;
+  width: 100%;
+  padding: $spacing-base $spacing-lg;
+  border: none;
+  background: none;
+  color: $color-on-surface;
+  font-size: $font-size-sm;
+  font-weight: 500;
+  cursor: pointer;
+  @include transition();
+  text-align: left;
+  border-bottom: 1px solid $color-outline-variant;
+ 
+  &:last-child {
+    border-bottom: none;
+  }
+ 
+  &:hover {
+    background-color: $color-surface-container-low;
+  }
+ 
+  .material-symbols-outlined {
+    font-size: $font-size-lg;
+  }
+}
+ 
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+ 
+// ============================================================================
+// KPI GRID & CARDS
+// ============================================================================
+ 
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: $spacing-lg;
+  margin-bottom: $spacing-2xl;
+ 
+  @media (max-width: $breakpoint-lg) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+ 
+  @media (max-width: $breakpoint-md) {
+    grid-template-columns: 1fr;
+  }
+}
+ 
+.kpi-card {
+  @include card-base;
+  padding: $spacing-lg;
+  @include flex-col;
+  justify-content: space-between;
+  min-height: 180px;
+  @include transition();
+ 
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-md;
+  }
+}
+ 
+.kpi-header {
+  @include flex-between;
+  margin-bottom: $spacing-base;
+}
+ 
+.kpi-label {
+  font-size: $font-size-xs;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: $color-secondary;
+}
+ 
+.kpi-icon {
+  width: 40px;
+  height: 40px;
+  @include flex-center;
+  border-radius: $radius-md;
+  background-color: rgba($color-primary, 0.1);
+  color: $color-primary;
+ 
+  .material-symbols-outlined {
+    font-size: $font-size-2xl;
+  }
+ 
+  &.icon-3 {
+    background-color: rgba($color-error, 0.1);
+    color: $color-error;
+  }
+}
+ 
+.kpi-content {
+  @include flex-col;
+  gap: $spacing-sm;
+}
+ 
+.kpi-value {
+  font-size: $font-size-3xl;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+ 
+.kpi-trend {
+  @include flex-center;
+  gap: $spacing-xs;
+  font-size: $font-size-sm;
+  font-weight: 700;
+ 
+  &.text-emerald-600 {
+    color: $color-emerald-600;
+  }
+ 
+  &.text-error {
+    color: $color-error;
+  }
+ 
+  &.text-secondary {
+    color: $color-secondary;
+  }
+ 
+  .material-symbols-outlined {
+    font-size: $font-size-base;
+  }
+}
+ 
+// ============================================================================
+// GRID LAYOUT
+// ============================================================================
+ 
+.grid {
+  display: grid;
+  gap: $spacing-2xl;
+}
+ 
+.grid-cols-12 {
+  grid-template-columns: repeat(12, 1fr);
+ 
+  @media (max-width: $breakpoint-lg) {
+    grid-template-columns: 1fr;
+  }
+}
+ 
+.col-span-8 {
+  grid-column: span 8;
+ 
+  @media (max-width: $breakpoint-lg) {
+    grid-column: span 1;
+  }
+}
+ 
+.col-span-4 {
+  grid-column: span 4;
+ 
+  @media (max-width: $breakpoint-lg) {
+    grid-column: span 1;
+  }
+}
+ 
+// ============================================================================
+// CARDS
+// ============================================================================
+ 
+.card {
+  @include card-base;
+  padding: $spacing-2xl;
+  @include flex-col;
+  gap: $spacing-lg;
+ 
+  &.card-lg {
+    min-height: 400px;
+  }
+ 
+  &.card-primary {
+    background-color: $color-primary;
+    border: none;
+    color: $color-on-primary;
+    box-shadow: $shadow-lg;
+ 
+    .card-title,
+    .card-header {
+      color: $color-on-primary;
+    }
+  }
+ 
+  &.card-alert {
+    background-color: $color-error-container;
+    border: 1px solid rgba($color-error, 0.2);
+ 
+    .card-header {
+      color: $color-error;
+    }
+ 
+    .alert-item {
+      color: $color-on-error-container;
+    }
+  }
+}
+ 
+.card-header {
+  @include flex-between;
+  margin-bottom: 0;
+}
+ 
+.card-title {
+  font-size: $font-size-2xl;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+ 
+.alert-header {
+  gap: $spacing-base;
+ 
+  .material-symbols-outlined {
+    font-size: $font-size-2xl;
+    flex-shrink: 0;
+  }
+}
+ 
+// ============================================================================
+// CHART SECTION
+// ============================================================================
+ 
+.chart-toggle {
+  @include flex-center;
+  gap: $spacing-sm;
+  background-color: $color-surface-container;
+  border-radius: $radius-md;
+  padding: $spacing-sm;
+}
+ 
+.toggle-btn {
+  @include flex-center;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-base;
+  border: none;
+  border-radius: $radius-sm;
+  background-color: transparent;
+  color: $color-secondary;
+  cursor: pointer;
+  @include transition();
+  font-weight: 700;
+  font-size: $font-size-sm;
+ 
+  .material-symbols-outlined {
+    font-size: $font-size-lg;
+  }
+ 
+  &.active {
+    background-color: $color-primary;
+    color: $color-on-primary;
+  }
+ 
+  &:hover:not(.active) {
+    background-color: rgba($color-primary, 0.1);
+    color: $color-primary;
+  }
+}
+ 
+.chart-legend {
+  @include flex-center;
+  gap: $spacing-2xl;
+  padding: $spacing-lg 0;
+  border-bottom: 1px solid $color-outline-variant;
+}
+ 
+.legend-item {
+  @include flex-center;
+  gap: $spacing-sm;
+  font-size: $font-size-sm;
+  color: $color-secondary;
+ 
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+}
+ 
+.chart-container {
+  position: relative;
+  height: 320px;
+  padding: $spacing-lg 0;
+  border-bottom: 1px solid $color-outline-variant;
+ 
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      transparent 80%,
+      rgba($color-surface-container, 0.5) 100%
+    );
+    pointer-events: none;
+  }
+}
+ 
+.chart-placeholder {
+  @include flex-center;
+  flex-direction: column;
+  height: 100%;
+  color: $color-secondary;
+  text-align: center;
+ 
+  p {
+    margin: $spacing-sm 0;
+    font-size: $font-size-sm;
+    font-weight: 500;
+ 
+    &.text-sm {
+      font-size: $font-size-xs;
+      opacity: 0.7;
+    }
+  }
+}
+ 
+// ============================================================================
+// TABLE
+// ============================================================================
+ 
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: $radius-md;
+  border: 1px solid $color-outline-variant;
+}
+ 
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: $font-size-sm;
+ 
+  thead {
+    background-color: $color-surface-container;
+    border-bottom: 1px solid $color-outline-variant;
+ 
+    th {
+      padding: $spacing-base $spacing-2xl;
+      text-align: left;
+      font-size: $font-size-xs;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: $color-secondary;
+ 
+      &.text-right {
+        text-align: right;
+      }
+ 
+      &.text-center {
+        text-align: center;
+      }
+    }
+  }
+ 
+  tbody {
+    background-color: $color-surface;
+  }
+}
+ 
+.data-row {
+  border-bottom: 1px solid $color-outline-variant;
+  @include transition();
+ 
+  &:hover {
+    background-color: $color-surface-container-low;
+  }
+ 
+  td {
+    padding: $spacing-lg $spacing-2xl;
+    font-weight: 500;
+    color: $color-on-surface;
+ 
+    &.font-bold {
+      font-weight: 700;
+    }
+ 
+    &.text-right {
+      text-align: right;
+    }
+ 
+    &.text-center {
+      text-align: center;
+    }
+ 
+    &.text-secondary {
+      color: $color-secondary;
+    }
+ 
+    &.text-xs {
+      font-size: $font-size-xs;
+    }
+  }
+}
+ 
+.customer-cell {
+  @include flex-center;
+  gap: $spacing-base;
+}
+ 
+.customer-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-full;
+  @include flex-center;
+  color: $color-on-primary;
+  font-size: $font-size-xs;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+ 
+.status-badge {
+  display: inline-block;
+  padding: $spacing-sm $spacing-base;
+  border-radius: $radius-full;
+  font-size: $font-size-xs;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+ 
+  &.bg-emerald-100 {
+    background-color: $color-emerald-100;
+    color: $color-emerald-800;
+  }
+ 
+  &.bg-amber-100 {
+    background-color: $color-amber-100;
+    color: $color-amber-800;
+  }
+ 
+  &.bg-error-container {
+    background-color: $color-error-container;
+    color: $color-error;
+  }
+}
+ 
+.link {
+  color: $color-primary;
+  font-weight: 700;
+  text-decoration: none;
+  @include transition();
+ 
+  &:hover {
+    text-decoration: underline;
+  }
+ 
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+ 
+.link-sm {
+  @extend .link;
+  font-size: $font-size-xs;
+}
+ 
+// ============================================================================
+// STATUS CHART (Order Status)
+// ============================================================================
+ 
+.status-chart-container {
+  @include flex-center;
+  margin-bottom: $spacing-lg;
+}
+ 
+.status-donut {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: conic-gradient(
+    $color-primary 0deg,
+    $color-primary 302deg,
+    $color-emerald-500 302deg,
+    $color-emerald-500 360deg
+  );
+  @include flex-center;
+ 
+  &::after {
+    content: '';
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: $color-primary;
+  }
+}
+ 
+.status-donut-inner {
+  position: relative;
+  z-index: 1;
+  @include flex-center;
+  flex-direction: column;
+  text-align: center;
+}
+ 
+.status-donut-text {
+  color: $color-on-primary;
+}
+ 
+.status-percentage {
+  display: block;
+  font-size: $font-size-2xl;
+  font-weight: 900;
+}
+ 
+.status-label {
+  display: block;
+  font-size: $font-size-xs;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+ 
+.status-legend {
+  @include flex-col;
+  gap: $spacing-base;
+}
+ 
+.status-item {
+  @include flex-between;
+  font-size: $font-size-sm;
+ 
+  .status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+ 
+  .count {
+    color: $color-secondary;
+    font-weight: 500;
+  }
+}
+ 
+// ============================================================================
+// PRODUCTS LIST
+// ============================================================================
+ 
+.products-list {
+  @include flex-col;
+  gap: $spacing-base;
+}
+ 
+.product-item {
+  @include flex-center;
+  gap: $spacing-base;
+  padding: $spacing-base;
+  border-radius: $radius-md;
+  @include transition();
+ 
+  &:hover {
+    background-color: $color-surface-container-low;
+  }
+}
+ 
+.product-image {
+  width: 48px;
+  height: 48px;
+  border-radius: $radius-md;
+  object-fit: cover;
+}
+ 
+.product-info {
+  flex: 1;
+  @include flex-col;
+  gap: $spacing-xs;
+}
+ 
+.product-name {
+  font-size: $font-size-sm;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+}
+ 
+.product-sales {
+  font-size: $font-size-xs;
+  color: $color-secondary;
+  margin: 0;
+}
+ 
+.product-trend {
+  font-size: $font-size-sm;
+  font-weight: 900;
+  flex-shrink: 0;
+ 
+  &.trend-up {
+    color: $color-emerald-600;
+  }
+ 
+  &.trend-down {
+    color: $color-error;
+  }
+}
+ 
+// ============================================================================
+// ALERTS
+// ============================================================================
+ 
+.alert-list {
+  @include flex-col;
+  gap: $spacing-base;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+ 
+.alert-item {
+  @include flex-between;
+  padding: $spacing-base;
+  border-radius: $radius-md;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba($color-error, 0.1);
+  font-size: $font-size-sm;
+  font-weight: 500;
+}
+ 
+.alert-name {
+  flex: 1;
+}
+ 
+.alert-badge {
+  font-size: $font-size-xs;
+  font-weight: 900;
+  background-color: $color-on-error;
+  color: $color-error;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $radius-sm;
+  flex-shrink: 0;
+}
+ 
+// ============================================================================
+// UTILITY CLASSES
+// ============================================================================
+ 
+.gap-8 {
+  gap: $spacing-2xl;
+}
+ 
+.mt-6 {
+  margin-top: $spacing-lg;
+}
+ 
+.mb-6 {
+  margin-bottom: $spacing-lg;
+}
+ 
+.text-secondary {
+  color: $color-secondary;
+}
+ 
+.text-center {
+  text-align: center;
+}
+ 
+.text-right {
+  text-align: right;
+}
+ 
+.w-full {
+  width: 100%;
+}
+ 
+.py-4 {
+  padding-top: $spacing-base;
+  padding-bottom: $spacing-base;
+}
+ 
+// ============================================================================
+// RESPONSIVE
+// ============================================================================
+ 
+@media (max-width: $breakpoint-md) {
+  .dashboard-main {
+    padding: $spacing-lg;
+  }
+ 
+  .header-title {
+    font-size: $font-size-4xl;
+  }
+ 
+  .card {
+    padding: $spacing-lg;
+  }
+ 
+  .data-table {
+    font-size: $font-size-xs;
+ 
+    th,
+    td {
+      padding: $spacing-sm $spacing-base;
+    }
+  }
+ 
+  .chart-container {
+    height: 250px;
+  }
+ 
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+ 
+@media (max-width: $breakpoint-sm) {
+  .dashboard-main {
+    padding: $spacing-base;
+  }
+ 
+  .header-title {
+    font-size: $font-size-3xl;
+  }
+ 
+  .kpi-card {
+    padding: $spacing-base;
+  }
+ 
+  .card {
+    padding: $spacing-base;
+  }
+ 
+  .dropdown-menu {
+    min-width: 150px;
+  }
+ 
+  .data-table {
+    font-size: $font-size-xs;
+
+    th,
+    td {
+      padding: $spacing-xs $spacing-sm;
+    }
+  }
+}
+
+.chart-canvas {
+  width: 100%;
+  min-height: 320px;
+}
+
+.card-header-actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.column-menu-wrapper {
+  position: relative;
+}
+
+.column-menu {
+  min-width: 220px;
+}
+
+.column-option {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  cursor: pointer;
+}
+
+.period-chip {
+  cursor: default;
+}
+
+.alert-warning {
+  @include flex-center;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-lg;
+  padding: $spacing-base;
+  border-radius: $radius-lg;
+  background-color: $color-amber-100;
+  color: $color-amber-800;
+}
+
+.product-image-placeholder {
+  background-color: $color-surface-container-high;
+}

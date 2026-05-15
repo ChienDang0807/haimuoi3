@@ -49,9 +49,7 @@ export class NotificationBellComponent implements AfterViewInit {
   });
 
   // Computed for disabled state
-  readonly isDisabled = computed(() => {
-    return this.isShopOwnerWithoutShopId() || this.connectionStatus() === 'DISCONNECTED';
-  });
+  readonly isDisabled = computed(() => this.isShopOwnerWithoutShopId());
 
   // Computed for connection indicator
   readonly showPulsing = computed(() => this.connectionStatus() === 'CONNECTING');

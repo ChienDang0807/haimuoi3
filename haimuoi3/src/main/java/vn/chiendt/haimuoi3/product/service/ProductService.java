@@ -46,6 +46,8 @@ public interface ProductService {
 
     ShopProductResponse update(String id, UpdateProductRequest request);
 
+    ShopProductResponse toggleProductStatus(String id);
+
     ShopProductResponse uploadProductImage(String id, MultipartFile file);
 
     ShopProductResponse uploadProductImages(String id, MultipartFile[] files);
@@ -54,5 +56,15 @@ public interface ProductService {
 
     Page<ShopProductResponse> findAllByShopId(String shopId, Pageable pageable);
 
+    Page<ShopProductResponse> findAllForShopOwner(Long ownerUserId, Pageable pageable);
 
+    ShopProductResponse createForShopOwner(Long ownerUserId, CreateProductRequest request);
+
+    ShopProductResponse updateForShopOwner(Long ownerUserId, String productId, UpdateProductRequest request);
+
+    ShopProductResponse toggleStatusForShopOwner(Long ownerUserId, String productId);
+
+    ShopProductResponse uploadProductImageForShopOwner(Long ownerUserId, String productId, MultipartFile file);
+
+    ShopProductResponse uploadProductImagesForShopOwner(Long ownerUserId, String productId, MultipartFile[] files);
 }

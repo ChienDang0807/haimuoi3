@@ -1,17 +1,22 @@
 package vn.chiendt.haimuoi3.inventory.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.chiendt.haimuoi3.common.constants.Constants;
 import vn.chiendt.haimuoi3.common.utils.ShopIdUtils;
 import vn.chiendt.haimuoi3.common.exception.ResourceNotFoundException;
+import vn.chiendt.haimuoi3.inventory.dto.request.AdjustStockRequest;
+import vn.chiendt.haimuoi3.inventory.dto.response.InventoryItemResponse;
 import vn.chiendt.haimuoi3.inventory.model.postgres.ProductStockEntity;
 import vn.chiendt.haimuoi3.inventory.model.postgres.ReservationStatus;
 import vn.chiendt.haimuoi3.inventory.model.postgres.StockReservationEntity;
 import vn.chiendt.haimuoi3.inventory.repository.ProductStockRepository;
 import vn.chiendt.haimuoi3.inventory.repository.StockReservationRepository;
 import vn.chiendt.haimuoi3.inventory.service.InventoryService;
+import vn.chiendt.haimuoi3.inventory.validator.AdjustStockRequestValidator;
 import vn.chiendt.haimuoi3.order.dto.request.CreateOrderRequest;
 import vn.chiendt.haimuoi3.order.dto.request.OrderItemRequest;
 import vn.chiendt.haimuoi3.order.model.postgres.OrderEntity;
@@ -21,6 +26,8 @@ import vn.chiendt.haimuoi3.order.repository.OrderRepository;
 import vn.chiendt.haimuoi3.product.model.ProductKind;
 import vn.chiendt.haimuoi3.product.model.mongo.ProductEntity;
 import vn.chiendt.haimuoi3.product.repository.ProductRepository;
+import vn.chiendt.haimuoi3.shop.dto.response.ShopResponse;
+import vn.chiendt.haimuoi3.shop.service.ShopService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -38,6 +45,8 @@ public class InventoryServiceImpl implements InventoryService {
     private final ProductStockRepository productStockRepository;
     private final StockReservationRepository stockReservationRepository;
     private final OrderRepository orderRepository;
+    private final ShopService shopService;
+    private final AdjustStockRequestValidator adjustStockRequestValidator;
 
     @Override
     @Transactional
@@ -225,6 +234,74 @@ public class InventoryServiceImpl implements InventoryService {
             throw new IllegalArgumentException("shopId and productId must be valid");
         }
         productStockRepository.ensureRowExists(shopId, productId);
+    }
+
+    @Override
+    @Transactional
+    public ProductStockEntity adjustStock(Long shopId, String productId, int quantityOnHand) {
+        adjustStockRequestValidator.validateQuantityOnHand(quantityOnHand);
+        ProductEntity product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + productId));
+        validateProductBelongsToShop(product, shopId);
+
+        // Ensure row exists then lock for update
+        ProductStockEntity stock = ensureRowThenLock(shopId, productId);
+        stock.setQuantityOnHand(quantityOnHand);
+        stock.setUpdatedAt(LocalDateTime.now());
+        return productStockRepository.save(stock);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<InventoryItemResponse> getInventoryForShopOwner(Long ownerUserId, Pageable pageable) {
+        ShopResponse shop = shopService.getShopByOwnerId(ownerUserId);
+        return getInventoryByShopId(shop.getId(), pageable);
+    }
+
+    @Override
+    @Transactional
+    public InventoryItemResponse adjustStockForShopOwner(Long ownerUserId, String productId, AdjustStockRequest request) {
+        adjustStockRequestValidator.validate(request);
+        ShopResponse shop = shopService.getShopByOwnerId(ownerUserId);
+        ProductStockEntity updated = adjustStock(shop.getId(), productId, request.getQuantityOnHand());
+        return toInventoryItemResponse(updated);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<InventoryItemResponse> getInventoryByShopId(Long shopId, Pageable pageable) {
+        Page<ProductStockEntity> stockPage = productStockRepository.findByShopId(shopId, pageable);
+
+        // Collect product IDs to resolve names and SKUs from MongoDB
+        List<String> productIds = stockPage.getContent().stream()
+                .map(ProductStockEntity::getProductId)
+                .collect(Collectors.toList());
+
+        Map<String, ProductEntity> productMap = productIds.isEmpty()
+                ? Map.of()
+                : productRepository.findByIdIn(productIds).stream()
+                        .collect(Collectors.toMap(ProductEntity::getId, p -> p, (a, b) -> a));
+
+        return stockPage.map(stock -> toInventoryItemResponse(stock, productMap.get(stock.getProductId())));
+    }
+
+    private InventoryItemResponse toInventoryItemResponse(ProductStockEntity stock) {
+        ProductEntity product = productRepository.findById(stock.getProductId()).orElse(null);
+        return toInventoryItemResponse(stock, product);
+    }
+
+    private InventoryItemResponse toInventoryItemResponse(ProductStockEntity stock, ProductEntity product) {
+        String displayName = product != null ? product.getName() : "Sản phẩm #" + stock.getProductId();
+        String sku = product != null ? product.getSku() : null;
+        boolean lowStock = stock.getQuantityOnHand() <= Constants.Dashboard.LOW_STOCK_THRESHOLD;
+
+        return InventoryItemResponse.builder()
+                .productId(stock.getProductId())
+                .displayName(displayName)
+                .sku(sku)
+                .quantityOnHand(stock.getQuantityOnHand())
+                .lowStock(lowStock)
+                .build();
     }
 
     private ProductStockEntity ensureRowThenLock(Long shopId, String productId) {

@@ -1,119 +1,325 @@
-<div class="flex min-h-screen">
+<div class="flex min-h-screen bg-background text-on-background">
   <app-admin-sidebar />
 
-  <main class="flex-1 flex flex-col min-w-0">
-    <app-admin-header />
+  <div class="flex-1 flex flex-col min-w-0">
+    <app-admin-header searchPlaceholder="Tìm đơn hàng, sản phẩm hoặc khách hàng..." />
 
-    <div class="px-12 py-8 overflow-y-auto">
-      <section class="mb-12">
-        <h2 class="text-6xl font-black tracking-tighter mb-2">Performance Overview</h2>
-        <p class="text-lg text-secondary max-w-2xl">Admin analytics backed by live order, product, and review data.</p>
-      </section>
-
-      @if (errorMessage()) {
-        <div class="mb-8 rounded-xl border border-error/20 bg-error-container/10 p-4 text-sm text-error">
-          {{ errorMessage() }}
-        </div>
-      }
-
-      <div class="grid grid-cols-12 gap-8 mb-12">
-        <div class="col-span-8 bg-surface rounded-xl shadow-lg shadow-primary/5 p-8 flex flex-col justify-between relative overflow-hidden group">
-          <div class="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-            <span class="material-symbols-outlined text-[120px]" style="font-variation-settings: 'FILL' 1;">insights</span>
+    <div class="dashboard-container flex-1 min-h-0">
+      <main class="dashboard-main">
+        <header class="dashboard-header">
+          <div class="header-content">
+            <h2 class="header-title">Chào mừng trở lại, {{ header().shopName }}</h2>
+            <p class="header-subtitle">{{ header().subtitle }}</p>
           </div>
 
-          <div class="relative z-10">
-            <span class="text-[10px] font-black uppercase tracking-[0.2em] bg-primary text-on-primary px-3 py-1 rounded-full mb-6 inline-block">Revenue Growth</span>
-            <div class="flex items-baseline gap-4 mt-4">
-              <h3 class="text-6xl font-black tracking-tighter">{{ heroMetric().value }}</h3>
-              @if (heroMetric().trend; as trend) {
-                <span class="text-emerald-600 font-bold flex items-center gap-1 text-lg">
-                  <span class="material-symbols-outlined">trending_up</span> {{ trend.value }}
+          <div class="header-actions">
+            @if (isLoading()) {
+              <div class="loading-indicator">
+                <span class="material-symbols-outlined">progress_activity</span>
+                <span>Đang đồng bộ dữ liệu…</span>
+              </div>
+            }
+
+            <span class="btn btn-outline btn-sm period-chip" aria-disabled="true">
+              <span class="material-symbols-outlined">calendar_today</span>
+              <span>{{ dateRangeLabel }}</span>
+            </span>
+
+            <button
+              type="button"
+              class="btn btn-primary btn-sm"
+              disabled
+              title="Sắp ra mắt">
+              <span class="material-symbols-outlined">download</span>
+              <span>Xuất báo cáo</span>
+            </button>
+          </div>
+        </header>
+
+        @if (noShopLinked()) {
+          <div class="alert alert-warning">
+            <span class="material-symbols-outlined">storefront</span>
+            <span>Tài khoản chưa được liên kết cửa hàng. Vui lòng liên hệ quản trị nền tảng để được gán shop.</span>
+          </div>
+        }
+
+        @if (errorMessage(); as message) {
+          <div class="alert alert-error">
+            <span class="material-symbols-outlined">error</span>
+            <span>{{ message }}</span>
+          </div>
+        }
+
+        <section class="kpi-grid">
+          @for (metric of metrics(); track metric.label) {
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-label">{{ metric.label }}</span>
+                <span class="kpi-icon">
+                  <span class="material-symbols-outlined">{{ metric.icon }}</span>
                 </span>
-              }
+              </div>
+
+              <div class="kpi-content">
+                <div class="kpi-value">{{ metric.value }}</div>
+
+                @if (metric.trend; as trend) {
+                  <div class="kpi-trend" [ngClass]="getTrendColorClass(trend)">
+                    <span class="material-symbols-outlined">{{ getTrendIcon(trend.direction) }}</span>
+                    <span>{{ trend.value }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          } @empty {
+            @if (!isLoading() && !noShopLinked() && !errorMessage()) {
+              <p class="text-secondary">Chưa có dữ liệu KPI trong 7 ngày gần nhất.</p>
+            }
+          }
+        </section>
+
+        <div class="grid grid-cols-12 gap-8">
+          <div class="col-span-8 flex flex-col gap-8">
+            <div class="card card-lg">
+              <div class="card-header">
+                <h3 class="card-title">Tổng quan doanh thu</h3>
+
+                <div class="chart-toggle">
+                  <button type="button" class="toggle-btn" disabled aria-disabled="true" title="Sắp ra mắt">
+                    <span class="material-symbols-outlined">bar_chart</span>
+                  </button>
+                  <button type="button" class="toggle-btn active" disabled aria-disabled="true" title="Biểu đồ đường">
+                    <span class="material-symbols-outlined">show_chart</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="chart-legend">
+                <div class="legend-item">
+                  <div class="legend-dot" style="background-color: #455768;"></div>
+                  <span>Kỳ hiện tại</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-dot" style="background-color: #cbd5e1;"></div>
+                  <span>Kỳ trước</span>
+                </div>
+              </div>
+
+              <div class="chart-container">
+                @if (isBrowser && chartOptions(); as options) {
+                  <div echarts [options]="options" class="chart-canvas"></div>
+                } @else if (isLoading()) {
+                  <div class="chart-placeholder">
+                    <p>Đang tải biểu đồ…</p>
+                  </div>
+                } @else {
+                  <div class="chart-placeholder">
+                    <p>Chưa có dữ liệu biểu đồ cho 7 ngày gần nhất.</p>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Đơn hàng gần đây</h3>
+                <div class="card-header-actions">
+                  <div class="column-menu-wrapper">
+                    <button type="button" class="btn btn-outline btn-sm" (click)="toggleColumnMenu()">
+                      <span class="material-symbols-outlined">view_column</span>
+                      <span>Cột</span>
+                    </button>
+
+                    @if (isColumnMenuOpen()) {
+                      <div class="dropdown-menu dropdown-menu-right column-menu">
+                        @for (column of columnOptions; track column) {
+                          <label class="dropdown-item column-option">
+                            <input
+                              type="checkbox"
+                              [checked]="isColumnVisible(column)"
+                              [disabled]="isColumnToggleDisabled(column)"
+                              (change)="onColumnToggle(column)" />
+                            <span>{{ columnLabels[column] }}</span>
+                          </label>
+                        }
+                      </div>
+                    }
+                  </div>
+
+                  <a routerLink="/admin/orders" class="link">Xem tất cả</a>
+                </div>
+              </div>
+
+              <div class="table-wrapper">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      @if (isColumnVisible('orderId')) {
+                        <th>Mã đơn</th>
+                      }
+                      @if (isColumnVisible('customer')) {
+                        <th>Khách hàng</th>
+                      }
+                      @if (isColumnVisible('items')) {
+                        <th>Sản phẩm</th>
+                      }
+                      @if (isColumnVisible('status')) {
+                        <th>Trạng thái</th>
+                      }
+                      @if (isColumnVisible('time')) {
+                        <th>Thời gian</th>
+                      }
+                      @if (isColumnVisible('amount')) {
+                        <th class="text-right">Tổng tiền</th>
+                      }
+                      @if (isColumnVisible('action')) {
+                        <th class="text-center">Thao tác</th>
+                      }
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (order of recentOrders(); track order.orderId) {
+                      <tr class="data-row">
+                        @if (isColumnVisible('orderId')) {
+                          <td class="font-bold">{{ order.displayOrderCode }}</td>
+                        }
+                        @if (isColumnVisible('customer')) {
+                          <td>
+                            <div class="customer-cell">
+                              <div
+                                class="customer-avatar"
+                                [ngClass]="'bg-gradient-to-br ' + order.customerColor">
+                                {{ order.customerInitials }}
+                              </div>
+                              <span>{{ order.customerName }}</span>
+                            </div>
+                          </td>
+                        }
+                        @if (isColumnVisible('items')) {
+                          <td class="text-secondary text-xs">
+                            {{ order.itemCount }} sản phẩm
+                          </td>
+                        }
+                        @if (isColumnVisible('status')) {
+                          <td>
+                            <span class="status-badge" [ngClass]="statusBadgeClass(order.status)">
+                              {{ order.statusLabel }}
+                            </span>
+                          </td>
+                        }
+                        @if (isColumnVisible('time')) {
+                          <td class="text-secondary text-xs">{{ order.timeAgoLabel }}</td>
+                        }
+                        @if (isColumnVisible('amount')) {
+                          <td class="text-right font-bold">{{ formatCurrency(order.totalAmount) }}</td>
+                        }
+                        @if (isColumnVisible('action')) {
+                          <td class="text-center">
+                            <button type="button" class="link-sm" (click)="viewOrderDetail(order.orderId)">
+                              Xem
+                            </button>
+                          </td>
+                        }
+                      </tr>
+                    } @empty {
+                      <tr>
+                        <td [attr.colspan]="visibleColumns().length" class="text-center text-secondary py-8">
+                          Chưa có đơn hàng trong 7 ngày gần nhất.
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
 
-          <div class="relative z-10 mt-10 h-64">
-            @if (isBrowser) {
-              <div echarts [options]="chartOptions()" class="h-full w-full"></div>
-            } @else {
-              <div class="flex h-full items-center justify-center rounded-xl bg-surface-container-low text-sm text-on-surface-variant">
-                Chart loads in browser.
+          <div class="col-span-4 flex flex-col gap-8">
+            <div class="card card-primary">
+              <div class="card-header mb-6">
+                <h3 class="card-title text-on-primary">Trạng thái đơn</h3>
               </div>
-            }
-          </div>
 
-          <div class="relative z-10 mt-8 flex gap-16">
-            @for (metric of secondaryMetrics(); track metric.label) {
-              <div>
-                <p class="text-[10px] font-black uppercase tracking-widest text-secondary mb-2">{{ metric.label }}</p>
-                <p class="text-2xl font-bold">{{ metric.value }}</p>
-              </div>
-            }
-          </div>
-        </div>
-
-        <div class="col-span-4 bg-primary text-on-primary rounded-xl p-8 flex flex-col justify-between">
-          <div>
-            <span class="material-symbols-outlined text-4xl mb-4">settings_suggest</span>
-            <h4 class="text-xl font-bold tracking-tight mb-2">System Integrity</h4>
-            <p class="text-on-primary/60 text-sm leading-relaxed">Admin APIs are protected by role ADMIN and return live monitoring data.</p>
-          </div>
-          <div class="mt-8 space-y-4">
-            <div class="flex justify-between items-center">
-              <span class="text-[10px] font-black uppercase tracking-widest">Data Source</span>
-              <span class="text-sm font-bold">{{ isLoading() ? 'LOADING' : 'LIVE' }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <section>
-        <div class="flex justify-between items-end mb-8">
-          <div>
-            <h2 class="text-4xl font-black tracking-tighter">Moderation Products</h2>
-            <p class="text-on-surface-variant text-sm mt-1">Latest product records available for admin search and review.</p>
-          </div>
-        </div>
-
-        <div class="bg-surface rounded-xl border border-outline-variant/30 overflow-hidden">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="bg-surface-container/30 border-b border-outline-variant/30">
-                <th class="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-secondary">Product</th>
-                <th class="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-secondary">Shop</th>
-                <th class="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-secondary">Status</th>
-                <th class="px-8 py-4 text-[10px] font-black uppercase tracking-widest text-secondary">Price</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-outline-variant/30">
-              @for (product of moderationProducts(); track product.id) {
-                <tr class="hover:bg-surface-container-low transition-colors">
-                  <td class="px-8 py-5">
-                    <div class="flex items-center gap-3">
-                      <img
-                        class="h-10 w-10 rounded object-cover"
-                        [src]="product.imageUrl || '/assets/placeholder.png'"
-                        [alt]="product.name" />
-                      <span class="text-sm font-semibold">{{ product.name }}</span>
+              <div class="status-chart-container">
+                <div class="status-donut">
+                  <div class="status-donut-inner">
+                    <div class="status-donut-text">
+                      <span class="status-percentage">{{ fulfillmentRatePercent() }}%</span>
+                      <span class="status-label">Hoàn tất</span>
                     </div>
-                  </td>
-                  <td class="px-8 py-5 font-mono text-sm">{{ product.shopId }}</td>
-                  <td class="px-8 py-5">
-                    <span class="bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase tracking-tighter px-2 py-1 rounded">{{ product.status }}</span>
-                  </td>
-                  <td class="px-8 py-5 font-bold">{{ product.price | currency:'USD':'symbol':'1.0-2' }}</td>
-                </tr>
-              } @empty {
-                <tr>
-                  <td colspan="4" class="px-8 py-8 text-center text-sm text-on-surface-variant">No products available.</td>
-                </tr>
+                  </div>
+                </div>
+              </div>
+
+              <div class="status-legend">
+                @for (slice of orderStatusBreakdown(); track slice.statusKey) {
+                  <div class="status-item">
+                    <div class="status-dot" [style.background-color]="statusSliceColor(slice.colorToken)"></div>
+                    <span>{{ slice.label }}</span>
+                    <span class="count">{{ slice.count }}</span>
+                  </div>
+                } @empty {
+                  <p class="text-sm text-on-primary/80">Chưa có dữ liệu trạng thái đơn.</p>
+                }
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Sản phẩm bán chạy</h3>
+              </div>
+
+              <div class="products-list">
+                @for (product of topProducts(); track product.productId) {
+                  <div class="product-item">
+                    @if (product.imageUrl) {
+                      <img class="product-image" [src]="product.imageUrl" [alt]="product.name" />
+                    } @else {
+                      <div class="product-image product-image-placeholder" aria-hidden="true"></div>
+                    }
+                    <div class="product-info">
+                      <h4 class="product-name">{{ product.name }}</h4>
+                      <p class="product-sales">{{ product.salesCount }} lượt bán</p>
+                    </div>
+                    <span
+                      class="product-trend"
+                      [class.trend-up]="product.trendDirection === 'up'"
+                      [class.trend-down]="product.trendDirection === 'down'">
+                      {{ getProductTrendIndicator(product.trendPercent, product.trendDirection) }}
+                    </span>
+                  </div>
+                } @empty {
+                  <p class="text-center text-sm text-secondary py-4">Chưa có sản phẩm bán chạy trong kỳ.</p>
+                }
+              </div>
+            </div>
+
+            <div class="card card-alert">
+              <div class="card-header alert-header">
+                <span class="material-symbols-outlined">warning</span>
+                <h3 class="card-title">Tồn kho thấp</h3>
+              </div>
+
+              @if (lowStockAlerts().length > 0) {
+                <ul class="alert-list">
+                  @for (alert of lowStockAlerts(); track alert.productId) {
+                    <li class="alert-item">
+                      <span class="alert-name">{{ alert.productName }}</span>
+                      <span class="alert-badge">Còn {{ alert.quantityOnHand }}</span>
+                    </li>
+                  }
+                </ul>
+              } @else {
+                <p class="text-center text-sm text-secondary py-4">Không có sản phẩm tồn kho thấp.</p>
               }
-            </tbody>
-          </table>
+
+              <button type="button" class="btn btn-alert w-full mt-6" (click)="navigateToInventory()">
+                Nhập hàng ngay
+              </button>
+            </div>
+          </div>
         </div>
-      </section>
+      </main>
     </div>
-  </main>
+  </div>
 </div>

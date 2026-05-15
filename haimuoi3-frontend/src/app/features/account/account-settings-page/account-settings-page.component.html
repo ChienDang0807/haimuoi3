@@ -3,11 +3,15 @@
 <div class="min-h-screen bg-background text-on-background">
   <app-account-sidebar />
 
-  <main class="min-h-screen pt-20 md:pl-72">
-    <div class="mx-auto max-w-3xl p-8 lg:p-12">
-      <span class="mb-2 block text-[10px] font-black uppercase tracking-widest text-primary">Account</span>
-      <h1 class="mb-4 text-4xl font-black tracking-tighter text-on-surface">Settings</h1>
+  <main class="min-h-screen pt-20 md:pl-72 p-4 md:p-8">
+    <div class="rounded-[32px] bg-white p-6 shadow-sm border border-gray-100 md:p-10 lg:p-12">
+      <div class="mx-auto max-w-3xl space-y-8">
+        <div class="mb-8 flex flex-col">
+          <span class="mb-2 text-[10px] font-black uppercase tracking-widest text-primary">Account</span>
+          <h2 class="text-5xl font-black tracking-tighter text-on-surface">Settings</h2>
+        </div>
       <app-notification-settings />
+      </div>
     </div>
   </main>
 </div>

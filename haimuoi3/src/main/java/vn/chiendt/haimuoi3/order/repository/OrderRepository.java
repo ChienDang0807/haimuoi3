@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import vn.chiendt.haimuoi3.order.model.postgres.OrderEntity;
 import vn.chiendt.haimuoi3.order.model.postgres.OrderStatus;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,9 +38,20 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
     @Query("SELECT DISTINCT o FROM OrderEntity o LEFT JOIN FETCH o.items WHERE o.id = :id AND o.customerId = :customerId")
     Optional<OrderEntity> findByIdAndCustomerIdWithItems(@Param("id") Long id, @Param("customerId") Long customerId);
 
-    Optional<OrderEntity> findByIdAndShopId(Long id, Long shopId);
+    @Query("SELECT DISTINCT o FROM OrderEntity o LEFT JOIN FETCH o.items WHERE o.id = :id AND o.shopId = :shopId")
+    Optional<OrderEntity> findByIdAndShopId(@Param("id") Long id, @Param("shopId") Long shopId);
 
     List<OrderEntity> findByCreatedAtBetween(LocalDateTime from, LocalDateTime to);
 
+    List<OrderEntity> findByShopIdAndCreatedAtBetween(Long shopId, LocalDateTime from, LocalDateTime to);
+
+    List<OrderEntity> findByShopIdOrderByCreatedAtDesc(Long shopId);
+
     boolean existsByCheckoutBatchId(UUID checkoutBatchId);
+
+    @Query("SELECT DISTINCT o FROM OrderEntity o LEFT JOIN FETCH o.items WHERE o.shopId = :shopId AND o.createdAt >= :from AND o.createdAt < :to")
+    List<OrderEntity> findByShopIdAndCreatedAtBetweenWithItems(@Param("shopId") Long shopId, @Param("from") LocalDateTime from, @Param("to") LocalDateTime to);
+
+    @Query("SELECT o FROM OrderEntity o WHERE o.shopId = :shopId AND o.createdAt < :before AND o.customerId IN :customerIds")
+    List<OrderEntity> findByShopIdAndCreatedAtBeforeAndCustomerIdIn(@Param("shopId") Long shopId, @Param("before") LocalDateTime before, @Param("customerIds") Collection<Long> customerIds);
 }

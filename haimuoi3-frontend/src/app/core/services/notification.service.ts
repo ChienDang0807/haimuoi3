@@ -1,12 +1,14 @@
-import { Injectable, inject, signal, computed, effect, PLATFORM_ID, ElementRef, AfterViewInit } from '@angular/core';
+import { Injectable, inject, signal, computed, effect, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Client, StompConfig, StompSubscription } from '@stomp/stompjs';
-import { Observable, Subject, debounceTime, filter, take } from 'rxjs';
+import { Subject, debounceTime, filter } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { ApiEndpoints } from '../constants/api-endpoints';
 import { AuthService } from './auth.service';
 import { ToastService } from './toast.service';
-import { NotificationDTO, NotificationType } from '../../shared/interfaces';
+import { ApiResponse, NotificationDTO } from '../../shared/interfaces';
 import { getNotificationTitle } from '../../shared/utils/notification-title.util';
 import { getNotificationRoute } from '../../shared/utils/notification-navigation.util';
 
@@ -14,6 +16,7 @@ import { getNotificationRoute } from '../../shared/utils/notification-navigation
 export class NotificationService {
   private platformId = inject(PLATFORM_ID);
   private router = inject(Router);
+  private http = inject(HttpClient);
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
 
@@ -68,6 +71,17 @@ export class NotificationService {
       if (user?.role === 'SHOP_OWNER' && user.shopId && this.client?.active && !this.shopSubscription) {
         this.subscribeShopTopic(user.shopId);
       }
+    });
+
+    effect(() => {
+      const user = this.authService.currentUser();
+      if (!user || !this.isBrowser) {
+        return;
+      }
+      if (user.role === 'SHOP_OWNER' && !user.shopId) {
+        return;
+      }
+      this.loadRecentNotifications();
     });
 
     // Effect: debounce toast
@@ -194,13 +208,19 @@ export class NotificationService {
       return;
     }
 
-    // Prepend to store (max 100)
-    this._notifications.update(list => {
-      const newList = [dto, ...list];
-      return newList.slice(0, 100);
-    });
+    const existing = this._notifications().find(n => n.id === dto.id);
+    if (existing) {
+      this._notifications.update(list => list.map(n => (n.id === dto.id ? dto : n)));
+      if (!existing.read && dto.read) {
+        this._unreadCount.update(c => Math.max(0, c - 1));
+      } else if (existing.read && !dto.read) {
+        this._unreadCount.update(c => c + 1);
+      }
+      return;
+    }
 
-    // Increment unread if not read
+    this.mergeNotifications([dto]);
+
     if (!dto.read) {
       this._unreadCount.update(c => c + 1);
     }
@@ -297,9 +317,11 @@ export class NotificationService {
   // 4.8 — Public methods
   openPanel(): void {
     this._isPanelOpen.set(true);
-    // Mark all displayed items as read
     this._notifications.update(list => list.map(n => ({ ...n, read: true })));
     this._unreadCount.set(0);
+    this.http
+      .patch<ApiResponse<void>>(`${environment.apiUrl}${ApiEndpoints.NOTIFICATIONS_READ_ALL}`, {})
+      .subscribe({ error: () => {} });
   }
 
   closePanel(): void {
@@ -307,9 +329,48 @@ export class NotificationService {
   }
 
   markAsRead(id: string): void {
+    const target = this._notifications().find(n => n.id === id);
+    if (!target || target.read) {
+      return;
+    }
     this._notifications.update(list =>
       list.map(n => (n.id === id ? { ...n, read: true } : n))
     );
     this._unreadCount.update(c => Math.max(0, c - 1));
+    this.http
+      .patch<ApiResponse<void>>(`${environment.apiUrl}/v1/notifications/${id}/read`, {})
+      .subscribe({ error: () => {} });
+  }
+
+  private loadRecentNotifications(): void {
+    if (!this.isBrowser || !this.authService.isLoggedIn()) {
+      return;
+    }
+
+    this.http
+      .get<ApiResponse<NotificationDTO[]>>(
+        `${environment.apiUrl}${ApiEndpoints.NOTIFICATIONS_ME}`,
+        { params: { limit: 50 } }
+      )
+      .subscribe({
+        next: res => {
+          if (Array.isArray(res?.result)) {
+            this.mergeNotifications(res.result);
+          }
+        },
+        error: () => {},
+      });
+  }
+
+  private mergeNotifications(incoming: NotificationDTO[]): void {
+    const byId = new Map<string, NotificationDTO>();
+    for (const item of [...incoming, ...this._notifications()]) {
+      byId.set(item.id, item);
+    }
+    const merged = [...byId.values()]
+      .sort((a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp))
+      .slice(0, 100);
+    this._notifications.set(merged);
+    this._unreadCount.set(merged.filter(n => !n.read).length);
   }
 }

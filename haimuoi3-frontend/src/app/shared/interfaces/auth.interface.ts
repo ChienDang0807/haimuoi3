@@ -25,4 +25,5 @@ export interface UserInfo {
   fullName: string;
   role: string;
   shopId?: number;
+  shopName?: string;
 }

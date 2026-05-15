@@ -3,8 +3,9 @@
 <div class="min-h-screen bg-background text-on-background">
   <app-account-sidebar />
 
-  <main class="min-h-screen pt-20 md:pl-72">
-    <div class="mx-auto max-w-7xl space-y-12 p-8 lg:p-12">
+  <main class="min-h-screen pt-20 md:pl-72 p-4 md:p-8">
+    <div class="rounded-[32px] bg-white p-6 shadow-sm border border-gray-100 md:p-10 lg:p-12">
+      <div class="mx-auto max-w-7xl space-y-12">
       <section>
         <div class="mb-8 flex flex-col">
           <span class="mb-2 text-[10px] font-black uppercase tracking-widest text-primary">Account Overview</span>
@@ -13,7 +14,7 @@
 
         <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div class="space-y-8 lg:col-span-2">
-            <div class="rounded-xl bg-surface p-8 shadow-sm transition-all duration-300 hover:shadow-lg">
+            <div class="rounded-xl bg-slate-50 border border-gray-100 p-8 shadow-sm transition-all duration-300 hover:shadow-md">
               <div class="mb-8 flex items-start justify-between">
                 <div>
                   <h3 class="text-xl font-bold tracking-tight text-on-surface">Personal Details</h3>
@@ -168,7 +169,7 @@
               }
             </div>
 
-            <div class="rounded-xl bg-surface p-8 shadow-sm transition-all duration-300 hover:shadow-lg">
+            <div class="rounded-xl bg-slate-50 border border-gray-100 p-8 shadow-sm transition-all duration-300 hover:shadow-md">
               <div class="mb-8 flex items-start justify-between">
                 <div>
                   <h3 class="text-xl font-bold tracking-tight text-on-surface">Saved Addresses</h3>
@@ -278,7 +279,7 @@
               </div>
             </div>
 
-            <div class="rounded-xl bg-surface p-8 shadow-sm">
+            <div class="rounded-xl bg-slate-50 border border-gray-100 p-8 shadow-sm">
               <h3 class="mb-6 text-xl font-bold tracking-tight text-on-surface">Linked Accounts</h3>
               <div class="space-y-3">
                 <div class="flex items-center justify-between rounded-lg p-3">
@@ -334,7 +335,7 @@
             }
           </div>
         } @else if (recentOrders().length === 0) {
-          <div class="rounded-xl border border-dashed border-outline-variant bg-surface p-10 text-center">
+          <div class="rounded-xl border border-dashed border-outline-variant bg-slate-50 p-10 text-center">
             <p class="text-sm text-secondary">You have no orders yet.</p>
           </div>
         } @else {
@@ -342,7 +343,7 @@
             @for (o of recentOrders(); track trackOrderById($index, o)) {
               <a
                 [routerLink]="['/account/orders', o.id]"
-                class="group block rounded-xl bg-surface p-6 shadow-sm transition-all hover:shadow-lg">
+                class="group block rounded-xl bg-slate-50 border border-gray-100 p-6 shadow-sm transition-all hover:shadow-md">
                 <div class="mb-4 flex items-center justify-between">
                   <span class="text-[10px] font-black uppercase tracking-widest text-secondary">Order #{{ o.id }}</span>
                   <span class="rounded px-2 py-1 text-[10px] font-black uppercase tracking-widest" [ngClass]="orderStatusBadgeClass(o.status)">
@@ -362,6 +363,7 @@
           </div>
         }
       </section>
+      </div>
     </div>
   </main>
 </div>

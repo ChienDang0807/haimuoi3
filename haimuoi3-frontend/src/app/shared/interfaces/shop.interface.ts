@@ -85,3 +85,109 @@ export interface CreateShopProductPayload {
   sku?: string;
   variantOptions?: Record<string, string>;
 }
+
+
+export type ShopOwnerDashboardPeriod = '7d';
+
+export type ShopDashboardTrendDirection = 'up' | 'down' | 'neutral';
+
+export interface ShopDashboardHeaderDto {
+  shopName?: string;
+  subtitle?: string;
+}
+
+export interface ShopDashboardKpiTrendDto {
+  direction?: string;
+  value?: string;
+  isPositive?: boolean;
+  positive?: boolean;
+}
+
+export interface ShopDashboardKpiCardDto {
+  label?: string;
+  value?: string;
+  icon?: string;
+  trend?: ShopDashboardKpiTrendDto;
+}
+
+export interface ShopDashboardRevenuePointDto {
+  label?: string;
+  revenue?: number;
+  orderCount?: number;
+}
+
+export interface ShopDashboardRecentOrderDto {
+  orderId?: number;
+  displayOrderCode?: string;
+  customerName?: string;
+  customerInitials?: string;
+  customerColor?: string;
+  itemCount?: number;
+  status?: string;
+  statusLabel?: string;
+  timeAgoLabel?: string;
+  totalAmount?: number;
+}
+
+export interface ShopDashboardOrderStatusSliceDto {
+  statusKey?: string;
+  label?: string;
+  count?: number;
+  colorToken?: string;
+}
+
+export interface ShopDashboardTopProductDto {
+  productId?: string;
+  name?: string;
+  imageUrl?: string;
+  salesCount?: number;
+  trendPercent?: number;
+  trendDirection?: string;
+}
+
+export interface ShopDashboardLowStockAlertDto {
+  productId?: string;
+  productName?: string;
+  quantityOnHand?: number;
+}
+
+export interface ShopDashboardShopHealthDto {
+  connectionLabel?: string;
+  lastSyncedAt?: string;
+}
+
+export interface ShopOwnerDashboardResponse {
+  header?: ShopDashboardHeaderDto;
+  kpiCards?: ShopDashboardKpiCardDto[];
+  revenueTrend?: ShopDashboardRevenuePointDto[];
+  revenueTrendPrevious?: ShopDashboardRevenuePointDto[];
+  recentOrders?: ShopDashboardRecentOrderDto[];
+  orderStatusBreakdown?: ShopDashboardOrderStatusSliceDto[];
+  fulfillmentRatePercent?: number;
+  topProducts?: ShopDashboardTopProductDto[];
+  lowStockAlerts?: ShopDashboardLowStockAlertDto[];
+  shopHealth?: ShopDashboardShopHealthDto;
+  generatedAt?: string;
+} 
+
+/** Body PUT /api/v1/shops/my-shop */
+export interface UpdateShopPayload {
+  shopName?: string;
+  description?: string;
+  logoUrl?: string;
+  bannerUrl?: string;
+  email?: string;
+  phone?: string;
+  province?: string;
+  district?: string;
+  addressDetail?: string;
+}
+
+/** Response from POST /api/v1/media/upload/{targetType} */
+export interface MediaUploadResponseDto {
+  fileName?: string;
+  originalFileName?: string;
+  contentType?: string;
+  size?: number;
+  url?: string;
+}

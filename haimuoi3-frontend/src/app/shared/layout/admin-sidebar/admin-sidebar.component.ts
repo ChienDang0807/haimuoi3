@@ -1,6 +1,7 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 import { AdminNavItem } from '../../interfaces/admin';
 
 @Component({
@@ -12,6 +13,12 @@ import { AdminNavItem } from '../../interfaces/admin';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminSidebarComponent {
+  private readonly authService = inject(AuthService);
+
+  readonly shopDisplayName = computed(
+    () => this.authService.currentUser()?.shopName ?? 'Titanium Shop',
+  );
+
   navItems: AdminNavItem[] = [
     { id: 'dashboard', label: 'Dashboard', icon: 'dashboard', route: '/admin/dashboard' },
     { id: 'inventory', label: 'Inventory', icon: 'inventory_2', route: '/admin/inventory' },

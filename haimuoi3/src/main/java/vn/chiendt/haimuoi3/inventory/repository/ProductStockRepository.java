@@ -1,6 +1,8 @@
 package vn.chiendt.haimuoi3.inventory.repository;
 
 import jakarta.persistence.LockModeType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
@@ -9,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import vn.chiendt.haimuoi3.inventory.model.postgres.ProductStockEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -29,4 +32,8 @@ public interface ProductStockRepository extends JpaRepository<ProductStockEntity
                     + "ON CONFLICT (shop_id, product_id) DO NOTHING",
             nativeQuery = true)
     void ensureRowExists(@Param("shopId") Long shopId, @Param("productId") String productId);
+
+    List<ProductStockEntity> findByShopIdAndQuantityOnHandLessThanEqual(Long shopId, Integer threshold);
+
+    Page<ProductStockEntity> findByShopId(Long shopId, Pageable pageable);
 }

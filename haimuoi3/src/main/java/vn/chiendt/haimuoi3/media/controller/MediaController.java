@@ -1,6 +1,7 @@
 package vn.chiendt.haimuoi3.media.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.chiendt.haimuoi3.common.dto.ApiResponse;
@@ -11,6 +12,7 @@ import vn.chiendt.haimuoi3.product.dto.response.GlobalCategoryResponse;
 import vn.chiendt.haimuoi3.product.dto.response.ShopProductResponse;
 import vn.chiendt.haimuoi3.product.service.GlobalCategoryService;
 import vn.chiendt.haimuoi3.product.service.ProductService;
+import vn.chiendt.haimuoi3.user.model.postgres.UserEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,34 +32,29 @@ public class MediaController {
             @RequestPart("file") MultipartFile file
     ) {
         MediaUploadResponse uploaded = mediaService.uploadImage(file, targetType);
-        return ApiResponse.<MediaUploadResponse>builder()
-                .message("Upload image successfully")
-                .result(uploaded)
-                .build();
+        return ApiResponse.success(uploaded, "Upload image successfully");
     }
 
     @PostMapping("/product/{productId}/upload")
     public ApiResponse<ShopProductResponse> uploadProductImage(
+            @AuthenticationPrincipal UserEntity currentUser,
             @PathVariable String productId,
             @RequestPart("file") MultipartFile file
     ) {
-        ShopProductResponse updatedProduct = productService.uploadProductImage(productId, file);
-        return ApiResponse.<ShopProductResponse>builder()
-                .message("Upload product image successfully")
-                .result(updatedProduct)
-                .build();
+        ShopProductResponse updatedProduct = productService.uploadProductImageForShopOwner(
+                currentUser.getId(), productId, file);
+        return ApiResponse.success(updatedProduct, "Upload product image successfully");
     }
 
     @PostMapping("/product/{productId}/upload/multiple")
     public ApiResponse<ShopProductResponse> uploadProductImages(
+            @AuthenticationPrincipal UserEntity currentUser,
             @PathVariable String productId,
             @RequestPart("files") MultipartFile[] files
     ) {
-        ShopProductResponse updatedProduct = productService.uploadProductImages(productId, files);
-        return ApiResponse.<ShopProductResponse>builder()
-                .message("Upload product images successfully")
-                .result(updatedProduct)
-                .build();
+        ShopProductResponse updatedProduct = productService.uploadProductImagesForShopOwner(
+                currentUser.getId(), productId, files);
+        return ApiResponse.success(updatedProduct, "Upload product images successfully");
     }
 
     @PostMapping("/global-category/{categoryId}/upload/multiple")
@@ -72,9 +69,6 @@ public class MediaController {
                 .toList();
         GlobalCategoryResponse updatedCategory = globalCategoryService.updateImages(categoryId, imageUrls);
 
-        return ApiResponse.<GlobalCategoryResponse>builder()
-                .message("Upload global category images successfully")
-                .result(updatedCategory)
-                .build();
+        return ApiResponse.success(updatedCategory, "Upload global category images successfully");
     }
 }

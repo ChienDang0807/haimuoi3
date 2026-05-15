@@ -20,6 +20,7 @@ import { LoginPageComponent } from './features/auth/login-page/login-page.compon
 import { RegisterPageComponent } from './features/auth/register-page/register-page.component';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
+import { shopOwnerGuard } from './core/guards/shop-owner.guard';
 import { AccountProfilePageComponent } from './features/account/account-profile-page/account-profile-page.component';
 import { AccountSettingsPageComponent } from './features/account/account-settings-page/account-settings-page.component';
 import { AccountOrdersPageComponent } from './features/account/account-orders-page/account-orders-page.component';
@@ -117,6 +118,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
+    canActivate: [shopOwnerGuard],
     children: [
       {
         path: '',

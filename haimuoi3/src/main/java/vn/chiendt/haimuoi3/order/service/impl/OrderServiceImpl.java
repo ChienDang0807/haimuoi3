@@ -265,6 +265,29 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
+    public OrderResponse getOrderByIdAndShopId(Long orderId, Long shopId) {
+        createOrderRequestValidator.validatePositiveOrderId(orderId);
+        OrderEntity order = orderRepository.findByIdAndShopId(orderId, shopId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
+        return orderMapper.toResponse(order);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<OrderResponse> getOrdersForShopOwner(Long ownerUserId, Pageable pageable) {
+        ShopResponse shop = shopService.getShopByOwnerId(ownerUserId);
+        return getOrdersByShopId(shop.getId(), pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public OrderResponse getOrderForShopOwner(Long ownerUserId, Long orderId) {
+        ShopResponse shop = shopService.getShopByOwnerId(ownerUserId);
+        return getOrderByIdAndShopId(orderId, shop.getId());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<OrderResponse> getOrdersByCustomerId(Long customerId) {
         return getOrdersByCustomerId(customerId, Pageable.unpaged()).getContent();
     }

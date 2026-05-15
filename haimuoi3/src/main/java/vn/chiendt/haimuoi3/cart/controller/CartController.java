@@ -27,10 +27,7 @@ public class CartController {
     public ApiResponse<CartResponse> createOrGetGuestCart(HttpServletRequest request) {
         String cartToken = CartTokenExtractor.extract(request);
         CartResponse cart = cartService.createOrGetGuestCart(cartToken);
-        return ApiResponse.<CartResponse>builder()
-                .message("Guest cart ready")
-                .result(cart)
-                .build();
+        return ApiResponse.success(cart, "Guest cart ready");
     }
 
     @PostMapping("/session/items")
@@ -40,28 +37,19 @@ public class CartController {
         String cartToken = CartTokenExtractor.extract(request);
         body.setCartToken(cartToken);
         CartResponse cart = cartService.addGuestItem(body);
-        return ApiResponse.<CartResponse>builder()
-                .message("Item added to cart")
-                .result(cart)
-                .build();
+        return ApiResponse.success(cart, "Item added to cart");
     }
 
     @GetMapping("/session/{cartToken}")
     public ApiResponse<CartResponse> getGuestCart(@PathVariable String cartToken) {
         CartResponse cart = cartService.getGuestCart(cartToken);
-        return ApiResponse.<CartResponse>builder()
-                .message("Guest cart fetched")
-                .result(cart)
-                .build();
+        return ApiResponse.success(cart, "Guest cart fetched");
     }
 
     @PostMapping("/merge")
     public ApiResponse<MergeCartResponse> mergeGuestCartToUser(@RequestBody MergeCartRequest request) {
         MergeCartResponse result = cartService.mergeGuestCartToUser(request);
-        return ApiResponse.<MergeCartResponse>builder()
-                .message("Cart merge completed")
-                .result(result)
-                .build();
+        return ApiResponse.success(result, "Cart merge completed");
     }
 
     @DeleteMapping("/session/{cartToken}/items/{productId}")
@@ -69,10 +57,7 @@ public class CartController {
             @PathVariable String cartToken,
             @PathVariable String productId) {
         CartResponse cart = cartService.removeItem(cartToken, productId);
-        return ApiResponse.<CartResponse>builder()
-                .message("Item removed from cart")
-                .result(cart)
-                .build();
+        return ApiResponse.success(cart, "Item removed from cart");
     }
 
     @PatchMapping("/session/{cartToken}/items/{productId}")
@@ -81,18 +66,13 @@ public class CartController {
             @PathVariable String productId,
             @RequestBody UpdateCartItemRequest body) {
         CartResponse cart = cartService.updateItemQuantity(cartToken, productId, body.getQuantity());
-        return ApiResponse.<CartResponse>builder()
-                .message("Item quantity updated")
-                .result(cart)
-                .build();
+        return ApiResponse.success(cart, "Item quantity updated");
     }
 
     @DeleteMapping("/session/{cartToken}")
     public ApiResponse<Void> clearGuestCart(@PathVariable String cartToken) {
         cartService.clearCart(cartToken);
-        return ApiResponse.<Void>builder()
-                .message("Cart cleared")
-                .build();
+        return ApiResponse.success(null, "Cart cleared");
     }
 
     @GetMapping("/me")
@@ -130,9 +110,6 @@ public class CartController {
     @DeleteMapping("/me")
     public ApiResponse<Void> clearMyCart(@AuthenticationPrincipal UserEntity currentUser) {
         cartService.clearUserCart(currentUser.getId());
-        return ApiResponse.<Void>builder()
-                .code(1000)
-                .message("Cart cleared")
-                .build();
+        return ApiResponse.success(null, "Cart cleared");
     }
 }
